@@ -8,18 +8,17 @@ const ProAPI = {
         const url = `/products/${id}`;
         return axiosClient.get(url);
     },
-    add(product) {
-        const url = `/products`;
-        return axiosClient.post(url, product);
-    },
-    remove(id) {
-        const url = `/products/${id}`;
-        return axiosClient.delete(url);
-    },
-    upload(id, data) {
-        const url = `/products/${id}`;
-        return axiosClient.put(url, data);
-    },
-
 };
 export default ProAPI;
+export const add = (product) => {
+    const url = `/products`;
+    return axiosClient.post(url, product);
+}
+export const remove = (id) => {
+    const url = `/products/${id}`;
+    return axiosClient.delete(url);
+}
+export const upload = (id, data) => {
+    const url = `/products/${id}`;
+    return axiosClient.put(url, data);
+}

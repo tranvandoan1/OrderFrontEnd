@@ -1,0 +1,24 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import OrderDetailAPI from "../../API/Orderdetail";
+export const getOrderDetail = createAsyncThunk(
+    'orderdetail/getOrderDetail',
+    async () => {
+        const { data: orderdetail } = await OrderDetailAPI.getAll()
+        return orderdetail
+    }
+)
+const orderdetailiSlice = createSlice({
+    name: 'orderdetail',
+    initialState: {
+        value: []
+    },
+    reducers: {
+
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getOrderDetail.fulfilled, (state, action) => {
+            state.value = action.payload
+        })
+    }
+})
+export default orderdetailiSlice.reducer

@@ -1,3 +1,8 @@
+body::-webkit-scrollbar {
+    width: 100%;
+    height: 100%;
+}
+
 .box {
     position: relative;
     border-right: 1px solid rgb(233, 233, 233);
@@ -12,6 +17,7 @@
     height: 680px;
     border-right: 1px solid rgb(238, 238, 238);
 }
+
 .class_home {
     position: relative;
     background-color: rgb(100, 173, 237);
@@ -132,7 +138,7 @@
 
 .products {
     overflow-y: scroll;
-    height: 740px;
+    height: 100vh;
     border-right: 3px solid rgb(238, 238, 238);
     border-left: 1px solid rgb(238, 238, 238);
 }
@@ -204,12 +210,15 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    font-weight: 600px;
+
 }
 
 .name,
 .price {
     color: white;
     font-size: 1rem;
+    font-weight: 600px;
 }
 
 .list_pro {
@@ -217,25 +226,25 @@
     cursor: pointer;
 }
 
-.oder {
+.order {
     overflow-y: scroll;
-    height: 740px;
+    height: 100vh;
     position: relative;
 }
 
-.oder::-webkit-scrollbar {
+.order::-webkit-scrollbar {
     opacity: 0;
     width: 0rem;
 }
 
-.oder::-webkit-scrollbar-thumb {
+.order::-webkit-scrollbar-thumb {
     background-color: white;
     border-radius: 1rem;
     border: none;
     opacity: 0;
 }
 
-.oder_pro {
+.order_pro {
     background-color: blue;
     padding: 10px;
     color: white;
@@ -245,19 +254,30 @@
     top: 0;
     z-index: 10;
     font-size: 1.3rem;
-    margin-bottom: 10px;
 }
 
 .stt {
     font-size: 1rem;
-    padding: 3px 7px 3px 7px;
+    padding: 3px;
     border-radius: 5px;
-    margin-left: 10px;
-    height: 50px;
+    margin-left: 5px;
     background-color: white;
-    border: 1px solid rgb(79, 79, 79);
-    position: relative;
-    top: 10px;
+    border: 1px solid rgb(225, 225, 225);
+}
+
+.numerical-order {
+    margin-top: 2px;
+}
+
+.row-order {
+    margin-top: 10px;
+    border-bottom: 1px solid rgb(230, 228, 228);
+    padding-bottom: 5px;
+}
+
+.row-order:last-child {
+    border-bottom: 0;
+
 }
 
 .name_ode {
@@ -271,12 +291,8 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    margin-bottom: 20px;
 }
 
-.name_oder>.row {
-    --bs-gutter-x: 0rem !important;
-}
 
 .quantity {
     opacity: 1;
@@ -284,7 +300,6 @@
     white-space: nowrap;
     float: right;
     margin-right: 10px;
-    margin-top: 5px;
 }
 
 .quantity .minus,
@@ -299,7 +314,6 @@
     padding-right: 0;
     display: inline-block;
     vertical-align: top;
-    height: 30px;
     margin: 0
 }
 
@@ -317,21 +331,18 @@
     margin: 0
 }
 
+.quantity input[type="number"]:focus {
+    outline: 0;
+}
+
 .pay {
-    background-color: blue;
+    background-color: #fff;
     border: none;
     border-radius: 5px;
     padding: 10px;
     color: white;
     font-weight: 600;
-    font-size: 1.2rem;
-    position: absolute;
-    bottom: 0;
     width: 100%;
-}
-
-.pay:hover {
-    background-color: tomato;
 }
 
 .delete {
@@ -388,7 +399,6 @@
 
 .display_ap {
     margin-left: 10px;
-    margin-top: 10px;
 }
 
 select,
@@ -397,27 +407,20 @@ option {
     position: relative;
 }
 
-.box-oder {
+.box-order {
     overflow-y: scroll;
-    height: 490px;
+    height: 520px;
     position: relative;
 }
 
-.box-oder::-webkit-scrollbar {
+.box-order::-webkit-scrollbar {
     opacity: 0;
     width: 0rem;
 }
 
-.box-oder::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 1rem;
-    border: none;
-    opacity: 0;
-}
-
 .inpkk {
     padding-left: 10px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 500;
     padding-top: 10px;
     text-transform: capitalize;
@@ -425,8 +428,9 @@ option {
 }
 
 .inpkk>input {
-    width: 30%;
+    width: 40%;
     font-size: .8rem;
+    margin: 0 10px;
 }
 
 .sale_select {
@@ -457,13 +461,6 @@ option {
 }
 
 
-/* ẩn hiện ở giảm giá */
-
-
-/* .discount>.active {
-    display: none;
-} */
-
 
 /* Tổng tiền */
 
@@ -472,9 +469,6 @@ option {
     font-weight: 900;
     padding: 10px;
     text-align: right;
-    /* position: absolute;
-    right: 0;
-    bottom: 40px; */
 }
 
 .sum_price {
@@ -519,6 +513,8 @@ option {
     font-size: 1.2rem;
     font-weight: 600;
     left: 10px;
+    display: flex;
+
 }
 
 .create-update {
@@ -539,10 +535,6 @@ option {
     border-radius: 5px;
 }
 
-.chu_y {
-    font-size: .7rem;
-    margin-top: 5px;
-}
 
 .sao {
     color: red;
@@ -775,33 +767,43 @@ tbody>tr>td {
     0% {
         transform: rotate(32deg);
     }
+
     10% {
         transform: rotate(64deg);
     }
+
     20% {
         transform: rotate(96deg);
     }
+
     30% {
         transform: rotate(128deg);
     }
+
     40% {
         transform: rotate(160deg);
     }
+
     50% {
         transform: rotate(192deg);
     }
+
     60% {
         transform: rotate(224deg);
     }
+
     80% {
         transform: rotate(256deg);
     }
+
     80% {
         transform: rotate(288deg);
     }
+
     90% {
         transform: rotate(310deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -835,39 +837,49 @@ tbody>tr>td {
     0% {
         transform: rotate(32deg);
     }
+
     10% {
         transform: rotate(64deg);
     }
+
     20% {
         transform: rotate(96deg);
     }
+
     30% {
         transform: rotate(128deg);
     }
+
     40% {
         transform: rotate(160deg);
     }
+
     50% {
         transform: rotate(192deg);
     }
+
     60% {
         transform: rotate(224deg);
     }
+
     80% {
         transform: rotate(256deg);
     }
+
     80% {
         transform: rotate(288deg);
     }
+
     90% {
         transform: rotate(310deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
 }
 
-.delete-oder {
+.delete-order {
     position: absolute;
     top: 10px;
     right: 0;
@@ -888,23 +900,23 @@ tbody>tr>td {
     position: relative;
 }
 
-.oder__ {
+.order__ {
     text-transform: capitalize;
 }
 
-.show-oder {
+.show-order {
     transform: translateY(0);
     transition: .3s;
     opacity: 1;
     visibility: visible;
 }
 
-.oder__>a {
+.order__>a {
     text-decoration: none;
     font-weight: 600;
 }
 
-.oder__>a:hover {
+.order__>a:hover {
     text-decoration: underline;
     color: brown;
 }
@@ -936,28 +948,108 @@ tbody>tr>td {
 .number-page {
     display: flex !important;
 }
-.export{
+
+.export {
     color: black;
 }
-table{
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-    border: 1px solid #eeeeee;
-}
-table  th,
-table  th,
-table  th {
-    padding: 10px 20px;
-    font-weight: 500;
-    text-align: center;
-    font-size: .9rem;
-    border: 1px solid #eeeeee;
+
+.logo>a {
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
 }
 
-table  tbody td,
-table  tbody td,
-table tbody td {
-    padding: 1rem 0.5rem;
+#components-layout-demo-top-side .logo {
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+}
+
+.ant-row-rtl #components-layout-demo-top-side .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
+}
+
+
+.group_home {
+    background-color: #fff;
+    height: 100vh !important;
+}
+
+.ant-layout-header {
+    padding: 0 0px !important;
+}
+
+.box-table {
+    position: relative;
+    background-color: rgb(219, 219, 219);
+}
+
+.node {
+    width: 12px;
+    height: 12px;
+    background-color: gray;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    border-radius: 100%;
+}
+
+table td,
+thead>tr>th {
+    padding: 10px 10px !important;
+    text-align: center !important;
     border: 1px solid #eeeeee;
+    font-size: 1rem;
+
+}
+
+table td {
+    font-size: 13px;
+    border: 1px solid #eeeeee;
+    padding: 10px !important;
+}
+
+.ant-modal-footer {
+    display: none;
+}
+
+#components-layout-demo-fixed-sider .logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+.order {
+    overflow: hidden;
+}
+
+.discount {
+    position: absolute;
+    bottom: 20px;
+    height: 185px;
+    width: 100%;
+    background-color: #fff;
+}
+
+.payy {
+    position: absolute;
+    bottom: -25px;
+    width: 100%;
+}
+.ant-layout-sider-children{
+    background-color: #fff !important;
+} 
+.layout-website{
+    position: relative;
+}
+
+.site-layout-background {
+    background: #fff;
 }

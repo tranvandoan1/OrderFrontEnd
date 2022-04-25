@@ -1,25 +1,25 @@
 import { axiosClient } from "./link.js";
-const TableAPI = {
+const FloorAPI = {
     getAll() {
-        const url = `/table`;
+        const url = `/floor`;
         return axiosClient.get(url);
     },
     get(id) {
-        const url = `/table/${id}`;
+        const url = `/floor/${id}`;
         return axiosClient.get(url);
     },
     upload(id, data) {
-        const url = `/table/${id}`;
+        const url = `/floor/${id}`;
         return axiosClient.put(url, data);
     },
 
 };
-export default TableAPI;
+export default FloorAPI;
 export const remove = (id) => {
-    const url = `/table/${id}`;
+    const url = `/floor/${id}`;
     return axiosClient.delete(url);
 }
-export const addOder = (table) => {
-    const url = `/table`;
-    return axiosClient.post(url, table);
+export const addOder = (floor) => {
+    const url = `/floor`;
+    return axiosClient.post(url, floor);
 }

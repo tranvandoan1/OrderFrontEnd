@@ -158,26 +158,6 @@
   ],
   "saveoder": [
     {
-      "id_oder": "0.4876038327703103",
-      "amount": "3",
-      "id": "7",
-      "name": "cơm gà rang",
-      "image": "https://cdn.baogiaothong.vn/files/baogiay1/2016/08/05/com-ga-tam-duyen-hap-dan-0939.jpg",
-      "price": "42000",
-      "cate_id": "3",
-      "id_table": "0.38370149195528436"
-    },
-    {
-      "id_oder": "0.6833000852599977",
-      "amount": "3",
-      "id": "3",
-      "name": "cơm sườn sốt chua ngọt",
-      "image": "https://songkhoe.medplus.vn/wp-content/uploads/2020/05/mon-com-tam-suon-bo-1.png",
-      "price": "49000",
-      "cate_id": "3",
-      "id_table": "0.38370149195528436"
-    },
-    {
       "id_oder": "0.8370057627437089",
       "amount": "1",
       "id_table": "7",
@@ -202,16 +182,6 @@
       "time_new": "22-11-2021-9:36:34"
     },
     {
-      "id_oder": "0.8755990649258396",
-      "amount": 2,
-      "id": "9",
-      "name": "cá sụn",
-      "image": "https://image-us.eva.vn/upload/1-2018/images/2018-01-10/trach-chien-la-lot-1515549868-994-width640height480.jpg",
-      "price": "89000",
-      "cate_id": "4",
-      "id_table": "9"
-    },
-    {
       "id_oder": "0.875796218453081",
       "amount": "1",
       "id_table": "9",
@@ -228,6 +198,18 @@
       "amount": "1",
       "id_table": "9",
       "id": 0.48774480291419287,
+      "name": "rau muống xào tỏi",
+      "image": "https://firebasestorage.googleapis.com/v0/b/shop-e15e4.appspot.com/o/images%2Fcach-lam-nuoc-sot-sieu-de-de-lam-rau-muong-xao-toi-5.jpg?alt=media&token=dd867b3f-a725-4c2d-a034-5140c9fde22b",
+      "price": "30000",
+      "time": "13-4-2021-11:48:26",
+      "cate_id": "0.06038742536736508",
+      "time_new": "13-4-2021-11:48:43"
+    },
+    {
+      "id_oder": "0.469294813428059231",
+      "amount": "1",
+      "id_table": "91",
+      "id": 11,
       "name": "rau muống xào tỏi",
       "image": "https://firebasestorage.googleapis.com/v0/b/shop-e15e4.appspot.com/o/images%2Fcach-lam-nuoc-sot-sieu-de-de-lam-rau-muong-xao-toi-5.jpg?alt=media&token=dd867b3f-a725-4c2d-a034-5140c9fde22b",
       "price": "30000",
@@ -280,5 +262,5 @@
       "name": "bàn 10"
     }
   ],
-  "dataa":[]
+  "dataa": []
 }

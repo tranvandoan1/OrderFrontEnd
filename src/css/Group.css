@@ -36,7 +36,7 @@
     height: 280px;
 }
 
-.menu {
+/* .menu {
     background-color: blue;
     position: fixed;
     bottom: 0;
@@ -56,7 +56,7 @@
 
 .menu .jo {
     border-right: 1px solid rgb(165, 165, 165);
-}
+} */
 
 .aacc {
     background: cadetblue;
@@ -162,10 +162,10 @@
     display: none;
 }
 
-.icon_user>i {
+/* .icon_user>i {
     font-size: 3rem;
     color: blue;
-}
+} */
 
 .oderr_n>.row {
     --bs-gutter-x: 0 !important;
@@ -198,14 +198,6 @@
     text-transform: capitalize;
 }
 
-.ton {
-    width: 10px;
-    height: 10px;
-    background-color: gray;
-    position: absolute;
-    right: 10px;
-    border-radius: 5px;
-}
 
 .add>i {
     font-size: 3rem;
@@ -238,9 +230,7 @@
 
 .table {
     background-color: white;
-    max-width: 500px;
     margin: 0 auto;
-    margin-top: 20%;
     height: 100px;
 }
 
