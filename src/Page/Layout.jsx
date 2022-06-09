@@ -8,8 +8,7 @@ import { getSaveOrder } from "../features/saveorderSlice/saveOrderSlice"
 import styles from '../css/Home.module.css'
 import { SettingOutlined, LogoutOutlined, ApartmentOutlined } from '@ant-design/icons'
 import { getFloor } from '../features/FloorSlice/FloorSlice';
-import CheckFloor from './CheckFloor';
-
+import CheckTable from './CheckTable';
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutWeb = () => {
@@ -31,7 +30,7 @@ const LayoutWeb = () => {
     const menu = (
         <Menu className={styles.dropdown}>
             <Menu.Item key='userInfo' >
-                <Link className={styles.link} to='/case-manager'><Button type='text' icon={<SettingOutlined />} >Quản lý</Button></Link>
+                <Link className={styles.link} to='/case-manager/statistical'><Button type='text' icon={<SettingOutlined />} >Quản lý</Button></Link>
             </Menu.Item>
             <Menu.Item>
                 <Button icon={<LogoutOutlined />} type='text' onClick={() => signOut()}>Đăng xuất</Button>
@@ -44,7 +43,7 @@ const LayoutWeb = () => {
             <Header className={styles.header}>
                 <Row>
                     <Col xs={12} sm={4} md={12} lg={18} xl={18} >
-                            <CheckFloor/>
+                            <CheckTable/>
                     </Col>
                     <Col xs={12} sm={4} md={12} lg={6} xl={6} style={{ textAlign: "right" }}>
                         <Dropdown overlay={menu} arrow>
@@ -60,10 +59,6 @@ const LayoutWeb = () => {
                 <Sider
                     className={styles.sider}
                 >
-                    {/* <div className={styles.logo}  >
-                        <img src="https://www.jedecore.com/gif/bon-appetit/bon-appetit-017.gif" style={{ width: "50%", padding: "10px" }} alt="" />
-                        <br />
-                    </div> */}
                     <Menu  className={styles.menu} theme="dark" mode="inline" >
                         {
                             floors.map((item, index) => {
@@ -76,10 +71,6 @@ const LayoutWeb = () => {
                                 )
                             })
                         }
-                        {/* <div className={styles.headerContent}>
-                            <div >Đã có người ngồi</div>
-                            <div >Trống</div>
-                        </div> */}
                     </Menu>
                 </Sider>
                 <Layout className="site-layout">

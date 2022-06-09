@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Input, Button, Result, Modal, Row, Col, notification } from 'antd';
-import { deleteSaveOrder, getSaveOrder, removeSaveorder, uploadSaveOrder } from '../features/saveorderSlice/saveOrderSlice';
+import { Input, Button, Result, Modal, Row, Col, Table } from 'antd';
+import { deleteSaveOrder, deleteSaveOrders, getSaveOrder, uploadSaveOrder } from '../features/saveorderSlice/saveOrderSlice';
 import { getProduct } from '../features/ProductsSlice/ProductSlice';
 import { getCategori } from '../features/Categoris/CategoriSlice';
 import OrderAPI from '../API/Order';
 import OrderDetailAPI from '../API/Orderdetail';
-import { remove } from '../API/TableAPI';
-
+import '../css/Order.css'
+import { openNotificationWithIcon } from '../Notification';
 const SelectedProduct = () => {
-    const { table_id } = useParams()
+    const { floor_id, table_id } = useParams()
     const dispatch = useDispatch()
     let navigate = useNavigate();
 
@@ -42,10 +42,8 @@ const SelectedProduct = () => {
         sum += +prices[i]
     }
 
-
-
     const showModal = () => {
-        setIsModalVisible(true);
+        saveOrders.length >= 1 ? setIsModalVisible(true) : openNotificationWithIcon('warning', 'Bạn chưa chọn món !')
     };
     const handleCancel = () => {
         setIsModalVisible(false);
@@ -59,8 +57,8 @@ const SelectedProduct = () => {
     };
 
     // tăng số lượng
-    const increasingSaveOrder = (id_saveOrder) => {
-        const findSaveOrder = saveorders.find(item => item._id == id_saveOrder)
+    const increasingSaveOrder = (id) => {
+        const findSaveOrder = saveorders.find(item => item._id == id)
         if (findSaveOrder) {
             const upSaveOrder = {
                 ...findSaveOrder,
@@ -71,12 +69,11 @@ const SelectedProduct = () => {
     }
 
     // giảm số lượng
-    const reduceSaveOrder = (id_saveOrder) => {
-        const findSaveOrder = saveorders.find(item => item._id == id_saveOrder)
+    const reduceSaveOrder = (id) => {
+        const findSaveOrder = saveorders.find(item => item._id == id)
         if (findSaveOrder) {
             if (findSaveOrder.amount <= 1) {
                 dispatch(deleteSaveOrder(findSaveOrder._id))
-                dispatch(removeSaveorder(saveorders.filter(item => item._id !== findSaveOrder._id)))//bắn lên store 1 mảng mới đã xóa thằng đucợ chọn
             } else {
                 const upSaveOrder = {
                     ...findSaveOrder,
@@ -88,13 +85,14 @@ const SelectedProduct = () => {
         }
     }
 
-    // thêm sp vào giỏ
+    //thanh toán
     const comfirm = () => {
         const newIdOder = Math.random();
         const newOder = {
             bill: newIdOder,
             customer_name: customerName,
-            id_table: id,
+            id_table: table_id,
+            floor: floor_id,
             sale: Number(`${value}`),
             sum_price: Number(`${sumPrice == 0 ? sum : sumPrice}`),
         };
@@ -102,7 +100,7 @@ const SelectedProduct = () => {
 
         if (saveorders.weight) {
             saveorders.forEach((item) => {
-                if (item.id_table == id) {
+                if (item.id_table == table_id) {
                     const newOderDetail = {
                         bill: newOder.bill,
                         namePro: item.name,
@@ -114,7 +112,7 @@ const SelectedProduct = () => {
             });
         } else {
             saveorders.forEach((item) => {
-                if (item.id_table == id) {
+                if (item.id_table == table_id) {
                     const newOderDetail = {
                         bill: newOder.bill,
                         namePro: item.name,
@@ -128,11 +126,14 @@ const SelectedProduct = () => {
         }
 
         // xóa
+        let removeSaveOrders = []
         saveorders.map((item) => {
-            if (item.id_table == id) {
-                remove(item._id);
+            if (item.id_table == table_id) {
+                removeSaveOrders.push(item)
             }
         });
+        dispatch(deleteSaveOrders(removeSaveOrders))
+
         setSuccess(true);
         setIsModalVisible(false);
 
@@ -153,14 +154,39 @@ const SelectedProduct = () => {
         setValue(0)
     }
 
-    // Thông báo
-    const openNotificationWithIcon = (type, content) => {
-        notification[type]({
-            message: `${content}`,
-        });
-    }
+  
+    const columns = [
+        {
+            title: 'Tên món',
+            dataIndex: 'name',
+            width: 150
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'amount',
+        },
+        {
+            title: 'Đơn vị(Kg)',
+            dataIndex: 'weight',
+            render: (weight => weight ? weight : 'X')
+        },
+        {
+            title: 'Đơn giá',
+            dataIndex: 'price',
+            render: price => price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+        {
+            title: 'Thành tiền',
+            dataIndex: 'price',
+            render: (price, data) =>
+                (data.weight ?
+                    (+data.price * +data.weight * +data.amount) :
+                    (+data.price * +data.amount)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+    ];
+
     return (
-        <div className="col-md-3">
+        <div >
             <div className="order">
                 <div className="order_pro">Sản phẩm đã chọn</div>
                 <div className="box-order">
@@ -172,7 +198,7 @@ const SelectedProduct = () => {
                                 </Col>
                                 <Col xs={12} sm={4} md={12} lg={13} xl={13}>
                                     <span className="name_ode">{item.name}</span>
-                                    <span>{item.weight && item.weight+'kg'}</span>
+                                    <span>{item.weight && item.weight + 'kg'}</span>
                                 </Col>
                                 <Col xs={12} sm={4} md={12} lg={8} xl={8}>
                                     <span className="quantity buttons_added">
@@ -186,7 +212,7 @@ const SelectedProduct = () => {
                     })}
                 </div>
                 <div className="discount">
-                    <div className="inpkk ">chiết khấu :
+                    <div className="inpkk ">Giảm giá :
 
                         <Input style={{ width: 40 }} placeholder='......' value={value > 1 ? value : ""} onChange={(e) => setValue(e.target.value)} />
 
@@ -220,48 +246,19 @@ const SelectedProduct = () => {
                             <div className="col-8">
                                 <div className="tablee_xn">
                                     <div className="information">sản phẩm đã thêm</div>
-                                    <table className="table table-bordered pl-3">
-                                        <thead>
-                                            <tr>
-                                                <th>STT</th>
-                                                <th>Tên món ăn</th>
-                                                <th>Số Lượng</th>
-                                                <th>Đơn vị(kg)</th>
-                                                <th>đơn giá</th>
-                                                <th>thành tiền</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {saveOrders.map((item, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{item.name}</td>
-                                                        <td className="text-center">{item.amount
-                                                        }</td>
-                                                        <td>{item.weight ? item.weight : "X"}</td>
-                                                        <td className="text-center">{item.price
-                                                            .toString()
-                                                            .replace(
-                                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                                ","
-                                                            )}</td>
-                                                        <td className="text-center">
-                                                            {(item.weight ? (+item.price * +item.weight * +item.amount) : (+item.price * +item.amount)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })}
-                                            <tr>
-                                                <td colSpan="4" className="ck">Chiết khấu</td>
-                                                <td colSpan="2" className="text-center ckk">{value > 1 ? `${value}%` : "0%"}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan="4" className="text-center sumtt">tổng thanh toán</td>
-                                                <td colSpan="2" className="text-right summ">{(sumPrice == 0 ? sum : sumPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    {
+                                        saveOrders.length < 8 ?
+                                            <Table columns={columns} bordered={false} style={{ fontSize: ".8rem" }} dataSource={saveOrders} pagination={false} />
+                                            :
+                                            <Table columns={columns} bordered={false} style={{ fontSize: ".8rem" }} dataSource={saveOrders} pagination={false} scroll={{ y: 300 }} />
+                                    }
+
+                                    <div style={{ textAlign: "right", marginTop: "20px", fontSize: "17px" }}>
+                                        <span style={{ fontWeight: 500 }}>Giảm giá : {value ? value : "0"}%</span>
+                                        <br />
+                                        <span style={{ fontWeight: 500, color: "#ee4d2d" }}>Tổng thanh toán : {(sumPrice == 0 ? sum : sumPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</span>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -275,7 +272,7 @@ const SelectedProduct = () => {
                             status="success"
                             title="Thanh toán thành công"
                             extra={[
-                                <Link to="/order">Quay lại</Link>,
+                                <Link to={`/floor/floor_id=${floor_id}`}>Quay lại</Link>,
                             ]}
                         />
                     </Modal>

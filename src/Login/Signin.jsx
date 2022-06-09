@@ -15,7 +15,7 @@ const Signin = () => {
         const { data } = await UserAPI.signin(user)
         localStorage.setItem("user", JSON.stringify(data.user))
         alert("Mời bạn vào trang web")
-        navigate("/table/order");
+        navigate("/floor");
     };
 
     return (

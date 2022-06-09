@@ -1,0 +1,61 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\tranl\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add antd
+
+PATH: 
+  C:\Python27\;C:\Python27\Scripts;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files\Java\jdk1.8.0_211\bin;C:\Program Files\OpenJDK\openjdk-11.0.14.1_1\bin;C:\Program Files\nodejs\;C:\Users\tranl\AppData\Local\Microsoft\WindowsApps;C:\Users\tranl\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\heroku\bin;C:\Users\tranl\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.18
+
+Node version: 
+  16.14.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'D:\Order(Reactjs)\my-app\node_modules\esbuild-windows-64\esbuild.exe'
+
+npm manifest: 
+  {
+    "name": "my-app",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+      "start": "vite --port 2005 --open",
+      "build": "vite build",
+      "preview": "vite preview",
+      "start:server": "json-server --watch db.json --port 2300"
+    },
+    "dependencies": {
+      "@ant-design/icons": "^4.7.0",
+      "@material-ui/core": "^4.12.3",
+      "@reduxjs/toolkit": "^1.8.1",
+      "antd": "^4.19.5",
+      "axios": "^0.26.1",
+      "bower": "^1.8.14",
+      "file-saver": "^2.0.5",
+      "firebase": "^9.6.10",
+      "install": "^0.13.0",
+      "js-xlsx": "^0.8.22",
+      "material-table": "^2.0.3",
+      "react": "^17.0.2",
+      "react-csv": "^2.2.2",
+      "react-dom": "^17.0.2",
+      "react-hook-form": "^7.29.0",
+      "react-redux": "^7.2.8",
+      "react-router-dom": "^6.2.2",
+      "redux-persist": "^6.0.0",
+      "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+      "@vitejs/plugin-react": "^1.0.7",
+      "vite": "^2.8.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

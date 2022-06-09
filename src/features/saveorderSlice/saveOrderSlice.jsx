@@ -26,8 +26,9 @@ export const uploadSaveOrder = createAsyncThunk(
 export const deleteSaveOrder = createAsyncThunk(
     "saveorder/deleteSaveOrder",
     async (id) => {
-        const { data } = await remove(id);
-        return data
+        remove(id);
+        const { data: saveorders } = await SaveorderAPI.getAll()
+        return saveorders.filter(item => item._id !== id)
 
     }
 )
@@ -36,19 +37,19 @@ export const deleteSaveOrders = createAsyncThunk(
     "saveorder/deleteSaveOrders",
     async (data) => {
         data.map(item => remove(item._id))
-        const { data: saveorders } = await SaveorderAPI.getAll()
-        return saveorders
+        return newData
     }
 )
 export const uploadSaveOrders = createAsyncThunk(
     "saveorder/uploadSaveOrders",
     async (data) => {
-        console.log(data)
-        data.saveorders.map(item => console.log(item._id,{ ...item, floor_id: data.selectId.floor_id, id_table: data.selectId.id_table }))
-        // const { data: saveorders } = await SaveorderAPI.getAll()
-        // console.log(saveorders) 
-        // return saveorders
-
+        data.saveorders.map(item => upload(
+            item._id,
+            { ...item, floor_id: data.selectId.floor_id, id_table: data.selectId.id_table }
+        )
+        )
+        const { data: saveorders } = await SaveorderAPI.getAll()
+        return saveorders
     }
 )
 
@@ -75,12 +76,14 @@ const saveorderSlice = createSlice({
         builder.addCase(addSaveOrder.fulfilled, (state, action) => {
             state.value.push(action.payload)
         }),
+
+            builder.addCase(deleteSaveOrder.fulfilled, (state, action) => {
+                state.value = action.payload
+            }),
             builder.addCase(uploadSaveOrder.fulfilled, (state, action) => {
                 state.value = action.payload
             })
-        builder.addCase(deleteSaveOrders.fulfilled, (state, action) => {
-            state.value = action.payload
-        })
+
     }
 })
 export const { updateSaveorder, addSaveorder, removeSaveorder } = saveorderSlice.actions

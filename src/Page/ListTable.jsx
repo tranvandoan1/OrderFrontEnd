@@ -8,7 +8,7 @@ import { TeamOutlined } from '@ant-design/icons'
 import { Row, Col } from 'antd';
 import React from 'react';
 import { getSaveOrder } from "../features/saveorderSlice/saveOrderSlice"
-
+import IconTable from '../images/Group.png'
 const style = { padding: '10px 0', textAlign: "center", fontSize: "1.5rem", borderRadius: "40% 10% 40% 10%", cursor: 'pointer', color: "black" }
 
 const ListTable = () => {
@@ -33,7 +33,7 @@ const ListTable = () => {
                         <Col key={index} className="gutter-row" style={{ padding: "10px" }} xs={12} sm={6} md={6} lg={4} xl={3}>
                             <NavLink to={`/floor/floor_id=${floor_id}/table_id=${item._id}/order`}>
                                 <div style={style} className="box-table">
-                                    <div className="icon_user" style={{ fontSize: "2rem" }}><TeamOutlined /></div>
+                                   <img src={IconTable} alt="" style={{width:'40%'}} />
                                     {
                                         saveorders.map((itemOrder, index) => (item._id == itemOrder.id_table && <div key={index} className="node" style={{ backgroundColor: "yellowgreen" }} ></div>))
                                     }

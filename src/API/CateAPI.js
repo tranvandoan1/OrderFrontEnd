@@ -9,18 +9,20 @@ const CateAPI = {
         const url = `/categoris/${id}`;
         return axiosClient.get(url);
     },
-    add(cate) {
-        const url = `/categoris`;
-        return axiosClient.post(url, cate);
-    },
-    remove(id) {
-        const url = `/categoris/${id}`;
-        return axiosClient.delete(url);
-    },
-    upload(id, data) {
-        const url = `/categoris/${id}`;
-        return axiosClient.put(url, data);
-    },
+
+
 
 };
 export default CateAPI;
+export const add = (data) => {
+    const url = `/categoris`
+    return axiosClient.post(url, data)
+}
+export const remove = (id) => {
+    const url = `/categoris/${id}`;
+    return axiosClient.delete(url);
+}
+export const uploadCate = (id, data) => {
+    const url = `/categoris/${id}`;
+    return axiosClient.put(url, data);
+}

@@ -12,10 +12,10 @@ const OrderAPI = {
         const url = `/order`;
         return axiosClient.post(url, orders);
     },
-    remove(id) {
-        const url = `/order/${id}`;
-        return axiosClient.delete(url);
-    },
 
 };
 export default OrderAPI;
+export const remove = (id) => {
+    const url = `/order/${id}`;
+    return axiosClient.delete(url);
+}

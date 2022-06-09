@@ -14,7 +14,8 @@ body::-webkit-scrollbar {
     background-color: var(--eee-color);
     margin-top: 5px;
     overflow-y: scroll;
-    height: 680px;
+    height: 100vh;
+    width: 100%;
     border-right: 1px solid rgb(238, 238, 238);
 }
 
@@ -50,7 +51,7 @@ body::-webkit-scrollbar {
 
 
 /* bên trái */
-
+/* 
 .prev {
     position: relative;
     bottom: 10px;
@@ -72,7 +73,7 @@ body::-webkit-scrollbar {
 
 .prev>i {
     color: white;
-}
+} */
 
 .search {
     padding: 5px;
@@ -188,10 +189,10 @@ body::-webkit-scrollbar {
 .img>img {
     width: 100%;
 }
-
+/* 
 .products>.row {
     --bs-gutter-x: 0rem !important;
-}
+} */
 
 .name-price {
     background-color: rgba(0, 0, 0, 0.5);
@@ -281,7 +282,7 @@ body::-webkit-scrollbar {
 }
 
 .name_ode {
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-transform: capitalize;
     font-weight: 500;
     text-overflow: ellipsis;
@@ -983,8 +984,8 @@ tbody>tr>td {
 }
 
 .box-table {
-    position: relative;
-    background-color: rgb(219, 219, 219);
+    /* position: relative; */
+    /* background-color: rgb(219, 219, 219); */
 }
 
 .node {
@@ -1033,7 +1034,7 @@ table td {
 .discount {
     position: absolute;
     bottom: 20px;
-    height: 185px;
+    height: 150px;
     width: 100%;
     background-color: #fff;
 }
@@ -1052,4 +1053,7 @@ table td {
 
 .site-layout-background {
     background: #fff;
+}
+form>input:focus{
+    outline: none;
 }

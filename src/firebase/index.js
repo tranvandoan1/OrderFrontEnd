@@ -1,13 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 const firebaseConfig = {
-    apiKey: "AIzaSyD1xFiboYGLkD6X8E7utja58-8IiKH-KDc",
-    authDomain: "shopee-6ddce.firebaseapp.com",
-    projectId: "shopee-6ddce",
-    storageBucket: "shopee-6ddce.appspot.com",
-    messagingSenderId: "785935581940",
-    appId: "1:785935581940:web:158612b81b523e2c1a94a1"
+    apiKey: "AIzaSyAMUOKOE4Epn7VZ_CV2NjJLBjUwsQuE4tE",
+    authDomain: "order-94f58.firebaseapp.com",
+    projectId: "order-94f58",
+    storageBucket: "order-94f58.appspot.com",
+    messagingSenderId: "511337164176",
+    appId: "1:511337164176:web:cbe3d9fc7abfacef405715",
+    measurementId: "G-8N69440K8C"
 };
 
 const app = initializeApp(firebaseConfig);
-export const storage=getStorage(app)
+export const storage = getStorage(app)
