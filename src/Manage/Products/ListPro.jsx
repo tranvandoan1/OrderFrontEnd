@@ -6,7 +6,15 @@ import {
   getProductAll,
 } from "../../features/ProductsSlice/ProductSlice";
 import { getCategori } from "../../features/Categoris/CategoriSlice";
-import { Table, Space, Button, message, Select, Popconfirm } from "antd";
+import {
+  Table,
+  Space,
+  Button,
+  message,
+  Select,
+  Popconfirm,
+  BackTop,
+} from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "../../css/Home.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -163,6 +171,7 @@ const ListPro = () => {
               dataSource={products}
             />
           )}
+          <BackTop />
         </>
       );
     } else if (Object.keys(products).length > 0) {

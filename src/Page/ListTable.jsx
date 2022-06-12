@@ -1,5 +1,4 @@
-import "../css/Home.css"
-import "../css/Group.css"
+
 import { Link, NavLink, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'

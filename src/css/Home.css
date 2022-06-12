@@ -637,11 +637,6 @@ tbody>tr>td {
     font-weight: 500;
 }
 
-.tablee {
-    overflow-y: scroll;
-    height: auto;
-    width: 100%;
-}
 
 .tablee::-webkit-scrollbar {
     opacity: 0;
@@ -998,20 +993,8 @@ tbody>tr>td {
     border-radius: 100%;
 }
 
-table td,
-thead>tr>th {
-    padding: 10px 10px !important;
-    text-align: center !important;
-    border: 1px solid #eeeeee;
-    font-size: 1rem;
 
-}
 
-table td {
-    font-size: 13px;
-    border: 1px solid #eeeeee;
-    padding: 10px !important;
-}
 
 .ant-modal-footer {
     display: none;

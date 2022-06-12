@@ -6,6 +6,7 @@ import productSlice from "../features/ProductsSlice/ProductSlice";
 import categoriSlice from "../features/Categoris/CategoriSlice";
 import orderSlice from '../features/Order/Order'
 import orderdetailiSlice from '../features/OrderDetail/OrderDetail'
+import allDataSlice from "../features/AllDataSlice/AllDataSlice";
 export const store = configureStore({
   reducer :{
     saveorder:saveorderSlice,
@@ -15,6 +16,7 @@ export const store = configureStore({
     order:orderSlice,
     orderdetail:orderdetailiSlice,
     floor:floorSlice,
+    allData:allDataSlice
   }
 });
 
