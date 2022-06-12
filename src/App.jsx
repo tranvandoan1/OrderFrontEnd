@@ -29,7 +29,6 @@ function App() {
         <Route path="/" element={user ? (<Navigate to='/floor/'/>) : <Signin />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<PicturesWall />} />
-
         <Route path="/floor/" element={<LayoutWeb />}>
           <Route
             index
