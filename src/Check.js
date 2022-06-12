@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
-const Check = ({ a }) => {
+const Check = ({ children }) => {
+  console.log(children)
   const user = JSON.parse(localStorage.getItem("user"));
-  return (
-    !user && (
-      <>
-        {alert("Bạn phải đăng nhập !")}
-        <Navigate to="/signin" />
-      </>
-    )
-  );
+  console.log(user);
+  return user ? children : <Navigate to="/signin" />;
 };
 
 export default Check;

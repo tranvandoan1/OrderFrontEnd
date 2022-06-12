@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ListTable from "./Page/ListTable";
 import Orders from "./Page/Orders";
 import LayoutWeb from "./Page/Layout";
@@ -21,10 +21,12 @@ import EditTable from "./Manage/Table/EditTable";
 import EditPro from "./Manage/Products/EditPro";
 import ListStatistical from "./Manage/Statistical/ListStatistical";
 function App() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Signin />} />
+        <Route path="/" element={user ? (<Navigate to='/floor/'/>) : <Signin />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<PicturesWall />} />
 
