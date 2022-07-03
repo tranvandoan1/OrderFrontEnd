@@ -1,4 +1,4 @@
-import { axiosClient } from "./link.js";
+import { axiosClient } from "./Axios.js";
 const OrderAPI = {
     getAll() {
         const url = `/order`;

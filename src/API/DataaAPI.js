@@ -1,4 +1,4 @@
-import { axiosClient } from "./Link";
+import { axiosClient } from "./Axios.js";
 const DataaAPI = {
     getAll() {
         const url = `/products`;

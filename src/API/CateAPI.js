@@ -1,4 +1,4 @@
-import { axiosClient } from "./Link";
+import { axiosClient } from "./Axios.js";
 
 const CateAPI = {
     getAll() {
