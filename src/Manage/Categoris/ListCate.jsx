@@ -75,6 +75,7 @@ const ListCate = () => {
       <Table
         columns={columns}
         rowKey="_id"
+        bordered
         style={{ textAlign: "center" }}
         dataSource={categoris}
       />

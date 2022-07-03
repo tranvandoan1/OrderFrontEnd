@@ -30,80 +30,96 @@ const ListOder = () => {
     }
   };
   return (
-    <div style={{ height: "100vh", background: "#fff", flex: "0 0 200px" }}>
-      {orders.length > 0 ? (
-        <Collapse accordion>
-          {orders.map((item, index) => {
-            return (
-              <Panel
-                header={`#${item._id}${" ----------- "}${item.createdAt}`}
-                key={index}
-              >
-                <div className="header-order" style={{ textAlign: "left" }}>
-                  <span>Tên khác hàng : {item.customer_name}</span>
-                  <br />
-                  {tables.map(
-                    (table) =>
-                      table._id == item.id_table && (
-                        <span>Tên bàn : {table.name}</span>
-                      )
-                  )}
-                  <br />
-                  {item.sale > 0 && <>Giảm : {item.sale} %</>}
-                </div>
-                <br />
-                <Descriptions>
-                  {orderdetails.map((itemDetail) => {
-                    if (itemDetail.bill == item.bill) {
-                      return (
-                        <div key={itemDetail._id}>
-                          <Descriptions.Item label="Sản phẩm">
-                            {itemDetail.namePro} :{" "}
-                            {itemDetail.weight && (
-                              <>/ Cân nặng : {itemDetail.weight} KG</>
-                            )}
-                          </Descriptions.Item>
-                          <Descriptions.Item label="Gía tiền">
-                            {itemDetail.price
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                            VND
-                          </Descriptions.Item> <br />
-                          <Descriptions.Item label="Số lượng">
-                            Số lượng : {itemDetail.quantity}
-                          </Descriptions.Item>
-                        </div>
-                      );
-                    }
-                  })}
-                </Descriptions>
-                <br></br>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
+    <div style={{ height: "100vh", background: "#fff", overflow: "hidden" }}>
+      <div className="srcoll">
+        {orders.length > 0 ? (
+          <Collapse accordion>
+            {orders.map((item, index) => {
+              const time = new Date(item.createdAt);
+              return (
+                <Panel
+                  header={`#${
+                    item._id
+                  }${" ----------- "} Ngày ${time.getDate()}-${
+                    time.getMonth() + 1
+                  }-${time.getFullYear()}`}
+                  key={index}
                 >
-                  <span style={{ fontSize: "1.1rem", fontWeight: "600" }}>
-                    Tổng :{" "}
-                    {item.sum_price
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                    VND
-                  </span>
-                  <DeleteOutlined
-                    style={{ cursor: "pointer", fontSize: 18 }}
-                    onClick={() => deleteOrder(item._id)}
-                  />
-                </div>
-              </Panel>
-            );
-          })}
-        </Collapse>
-      ) : (
-        <Empty />
-      )}
+                  <div className="header-order" style={{ textAlign: "left" }}>
+                    <span>Tên khác hàng : {item.customer_name}</span>
+                    <br />
+                    {tables.map(
+                      (table) =>
+                        table._id == item.id_table && (
+                          <span>Tên bàn : {table.name}</span>
+                        )
+                    )}
+                    <br />
+                    {item.sale > 0 && <>Giảm : {item.sale} %</>}
+                  </div>
+                  <br />
+                  <Descriptions bordered size='default'>
+                    {orderdetails.map((itemDetail) => {
+                      if (itemDetail.bill == item.bill) {
+                        return (
+                          <div key={itemDetail._id}>
+                            <Descriptions.Item label="Sản phẩm">
+                              {itemDetail.namePro} (
+                              <span style={{ color: "red", fontWeight: "600" }}>
+                                x{itemDetail.quantity}
+                              </span>
+                              ) :
+                              {itemDetail.price
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                              {itemDetail.weight ? "VND/KG" : "VND"}
+                              <br />
+                              {itemDetail.weight && (
+                                <>Cân nặng : {itemDetail.weight} KG</>
+                              )}
+                            </Descriptions.Item>
+
+                            <br />
+                          </div>
+                        );
+                      }
+                    })}
+                  </Descriptions>
+                  <br></br>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "100%",
+                        fontSize: "1.1rem",
+                        fontWeight: "600",
+                        borderTop: "1px solid rgb(218, 218, 218)",
+                      }}
+                    >
+                      Tổng :{" "}
+                      {item.sum_price
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                      VND
+                    </span>
+                    <DeleteOutlined
+                      style={{ cursor: "pointer", fontSize: 18 }}
+                      onClick={() => deleteOrder(item._id)}
+                    />
+                  </div>
+                </Panel>
+              );
+            })}
+          </Collapse>
+        ) : (
+          <Empty />
+        )}
+      </div>
     </div>
   );
 };

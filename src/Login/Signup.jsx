@@ -23,24 +23,23 @@ const Signup = () => {
             email: values.email,
             avatar: url,
             name: values.name,
+            phone: values.phone,
             password: values.password,
           };
-          const { data } = await UserAPI.signup(user);
-          console.log(data);
+          await UserAPI.signup(user);
         } else {
           const user = {
             email: values.email,
             avatar: "",
             name: values.name,
+            phone: values.phone,
             password: values.password,
           };
-          const { data } = await UserAPI.signup(user);
-          console.log(data);
+          await UserAPI.signup(user);
         }
       });
     });
 
-  
     navigate("/signin");
   };
 
@@ -93,6 +92,16 @@ const Signup = () => {
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
             placeholder="Password"
+          />
+        </Form.Item>
+        <Form.Item
+          name="phone"
+          rules={[{ required: true, message: "Please input your Password!" }]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="phone"
+            placeholder="Số điện thoại"
           />
         </Form.Item>
         <Form.Item name="avatar" label="Avatar">

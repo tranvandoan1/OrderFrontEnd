@@ -91,6 +91,49 @@ const List = () => {
             alias: "Tiền",
           },
         },
+        tooltip: {
+          customContent: (title, items) => {
+            console.log(items);
+            return (
+              <>
+                <h6 style={{ marginTop: 10,fontSize:13 }}>{title}</h6>
+                <ul style={{ paddingLeft: 0 }}>
+                  {items?.map((item, index) => {
+                    const { name, value, color } = item;
+                    return (
+                      <li
+                        key={item.year}
+                        className="g2-tooltip-list-item"
+                        data-index={index}
+                        style={{
+                          marginBottom: 4,
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          className="g2-tooltip-marker"
+                          style={{ backgroundColor: color }}
+                        ></span>
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            flex: 1,
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <span style={{ margiRight: 16 }}>
+                            Tiền : {value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
+                          </span>
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            );
+          },
+        },
         label: {
           content: (data) => {
             return `${data.price.toLocaleString("vi-VN")} VNĐ`;

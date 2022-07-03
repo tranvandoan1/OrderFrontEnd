@@ -6,7 +6,7 @@ import ListCate from "./Manage/Categoris/ListCate";
 import LayoutAdmin from "./Manage/LayoutAdmin";
 import ListPro from "./Manage/Products/ListPro";
 import ListOder from "./Manage/ListOder";
-import Account from "./Manage/Account";
+import Account from "./Manage/Account/Account";
 import Signin from "./Login/Signin";
 import PicturesWall from "./Login/Signup";
 import AddCate from "./Manage/Categoris/AddCate";

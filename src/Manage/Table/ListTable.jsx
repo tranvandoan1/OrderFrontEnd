@@ -69,6 +69,7 @@ const ListTable = () => {
         rowKey={(item) => item._id}
         style={{ textAlign: "center" }}
         dataSource={tables}
+        bordered 
       />
     </div>
   );

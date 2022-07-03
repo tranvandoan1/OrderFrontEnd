@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Menu } from "antd";
+import { Avatar, Layout, Menu } from "antd";
 import {
   ShoppingCartOutlined,
   ProfileOutlined,
@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import { NavLink, Outlet } from "react-router-dom";
 import styles from "../css/LayoutAdmin.module.css";
+import '../css/Order.css'
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutAdmin = () => {
@@ -27,17 +28,14 @@ const LayoutAdmin = () => {
           bottom: 0,
         }}
       >
-        <div
-          style={{
-            borderBottom: "1px solid rgb(240, 240, 240)",
-            textAlign: "center",
-          }}
-        >
-          <img
-            src="https://www.jedecore.com/gif/bon-appetit/bon-appetit-017.gif"
-            style={{ width: "40%", padding: "10px" }}
+        <div className={styles.avatar_header}>
+          <Avatar
+            src="https://123design.org/wp-content/uploads/2020/07/LOGOLM0200-Chibi-%C4%90%E1%BB%87-nh%E1%BA%A5t-%C4%91%E1%BA%A7u-b%E1%BA%BFp-nh%C3%AD-Vua-%C4%91%E1%BA%A7u-b%E1%BA%BFp.jpg"
+            style={{ margin: "10px" }}
+            size={60}
             alt=""
           />
+          <span className={styles.title_logo}>BOM BOM</span>
         </div>
         <br />
         <Menu

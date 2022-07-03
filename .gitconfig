@@ -1,6 +1,7 @@
-node_modules/
-
 package-lock.json
-[safe]
-    directory = F:/GitHub/
-    directory = F:/Private/
+node_modules/
+.DS_Store
+dist
+dist-ssr
+*.local
+.vercel

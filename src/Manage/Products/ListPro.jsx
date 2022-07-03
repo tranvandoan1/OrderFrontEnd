@@ -169,6 +169,7 @@ const ListPro = () => {
               columns={columns}
               style={{ textAlign: "center" }}
               dataSource={products}
+              bordered 
             />
           )}
           <BackTop />

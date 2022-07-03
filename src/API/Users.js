@@ -11,3 +11,7 @@ const UserAPI = {
   },
 };
 export default UserAPI;
+export const upload = (id, data) => {
+  const url = `/user/${id}`;
+  return axiosClient.put(url, data);
+}

@@ -5,10 +5,19 @@
 .ant-table-cell-scrollbar{
     display: none;
 } */
-.ant-modal{
-    top:50px !important;
+.ant-modal {
+  top: 50px !important;
 }
 
 table tr th {
-    font-size: .9rem !important;
+  font-size: 0.9rem !important;
+  text-align: center !important;
+}
+.srcoll {
+  overflow: auto;
+  height: 100%;
+}
+.srcoll::-webkit-scrollbar{
+    width: 0;
+    height: 0;
 }

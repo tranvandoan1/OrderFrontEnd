@@ -66,6 +66,7 @@ const ListFloor = () => {
       <Table
         rowKey="_id"
         columns={columns}
+        bordered
         style={{ textAlign: "center" }}
         dataSource={floors}
       />

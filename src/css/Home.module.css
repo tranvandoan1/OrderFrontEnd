@@ -1,9 +1,7 @@
 
 .header{
     background-color: #fff !important;
-    height: 70px;
     padding: 0 10px !important;
-    margin-bottom: 10px;
     position: sticky;
     top: 0;
     right: 0;
@@ -40,14 +38,13 @@
 }
 
 .menu {
-    overflow: 'auto';
-    height: '100vh';
-    position: 'fixed';
+    background-color: #fff !important;
+    position: sticky;
+    top: 70px;
+    right: 0;
     left: 0;
-    top: 0;
-    bottom: 0;
-    background-color: #fff !important; 
-    font-size: 1.1rem;
+    z-index: 100;
+    box-shadow: 0 0 5px rgb(188, 188, 188);
 }
 .content{
     margin: 0 0 0 10px;
@@ -64,3 +61,8 @@
     background-color: #fff !important;
     border-top: 1px solid rgb(243, 243, 243);
 }
+/* .sider{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+} */

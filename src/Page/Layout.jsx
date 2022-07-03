@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { getFloor } from "../features/FloorSlice/FloorSlice";
 import CheckTable from "./CheckTable";
+import '../css/layoutWeb.css'
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutWeb = () => {
@@ -53,7 +54,7 @@ const LayoutWeb = () => {
       className={styles.main}
     >
       <Header className={styles.header}>
-        <Row>
+        <Row style={{margin:'0 20px'}}>
           <Col xs={12} sm={4} md={12} lg={18} xl={18}>
             <CheckTable />
           </Col>
