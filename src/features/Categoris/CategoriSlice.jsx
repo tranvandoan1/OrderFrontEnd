@@ -23,11 +23,9 @@ export const removeCategori = createAsyncThunk(
 );
 export const uploadCategori = createAsyncThunk(
   "categori/uploadCategori",
-  async (id,data) => {
-    console.log(id,data)
-    // await uploadCate(id,data);
-    // const { data: categoris } = await CateAPI.getAll();
-    // return categoris.filter((item) => item._id !== data._id);
+  async (data) => {
+    const { data: categoris } = await uploadCate(data.id,data.data);
+    return categoris;
   }
 );
 const categoriSlice = createSlice({
@@ -43,6 +41,9 @@ const categoriSlice = createSlice({
       builder.addCase(removeCategori.fulfilled, (state, action) => {
         state.value = action.payload;
       });
+    builder.addCase(uploadCategori.fulfilled, (state, action) => {
+      state.value = action.payload;
+    });
   },
 });
 export default categoriSlice.reducer;

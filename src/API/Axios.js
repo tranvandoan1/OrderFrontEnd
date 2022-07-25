@@ -1,8 +1,11 @@
 import axios from "axios";
+const token = localStorage.getItem("token");
 
 export const axiosClient = axios.create({
-    baseURL: "https://order-back.vercel.app/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
+  // baseURL: "http://localhost:9000/api",
+  baseURL: "https://order-back.vercel.app/api",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token?.slice(1, -1)}`,
+  },
 });

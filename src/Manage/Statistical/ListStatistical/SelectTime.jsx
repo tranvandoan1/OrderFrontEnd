@@ -1,4 +1,4 @@
-import { Button, DatePicker, Modal, Row, Space, Statistic } from "antd";
+import { Button, DatePicker, Modal, Row, Select, Space, Statistic } from "antd";
 import React, { useEffect, useState } from "react";
 import styles from "../../../css/CssAdmin.module.css";
 import { Bar } from "@ant-design/plots";
@@ -7,9 +7,13 @@ import { getOrder } from "./../../../features/Order/Order";
 import moment from "moment";
 
 const SelectTime = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const dipsatch = useDispatch();
   const orders = useSelector((data) => data.order.value);
+  const orderUser = orders?.filter((item) => item.id_user == user._id);
   const [date, setDate] = useState();
+  const [check, setCheck] = useState();
+
   useEffect(() => {
     dipsatch(getOrder());
   }, []);
@@ -29,9 +33,9 @@ const SelectTime = () => {
   const month = moment().month();
   const year = moment().year();
   const list = () => {
-    if (orders.length > 0) {
+    if (orderUser.length > 0) {
       const timeSelect = new Date(date);
-      const order = orders.filter((item) => {
+      const order = orderUser.filter((item) => {
         const time = new Date(item.createdAt);
 
         if (
@@ -115,9 +119,30 @@ const SelectTime = () => {
       );
     }
   };
+  const handleChange = (value) => {
+    setCheck(value);
+  };
+
   return (
     <>
-      Chọn ngày : <DatePicker onChange={onChange} />
+      Chọn :{" "}
+      <Select
+        style={{
+          width: 120,
+          marginRight: 20,
+        }}
+        onChange={handleChange}
+        placeholder="Chọn"
+      >
+        <Select.Option value="1">Ngày</Select.Option>
+        <Select.Option value="2">Tháng</Select.Option>
+        <Select.Option value="3">Năm</Select.Option>
+      </Select>
+      {check !== undefined && (
+        <>
+          Chọn ngày : <DatePicker onChange={onChange} />
+        </>
+      )}
       {/* <br />
       <br />
       <Modal title="Chọn ngày" visible={isModalVisible} onCancel={handleCancel}>

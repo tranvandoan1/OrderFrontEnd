@@ -18,6 +18,8 @@ const formItemLayout = {
 const EditTable = () => {
   const { id } = useParams();
   const tables = useSelector((data) => data.table.value);
+  const table = tables?.find((item) => item._id == id);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -25,46 +27,38 @@ const EditTable = () => {
   }, []);
   const uploadTable = (value) => {
     const newData = {
-      ...tables.find((item) => item._id == id),
-      name: value.name,
+      ...table,
+      name: value.name == undefined ? table.name : value.name,
     };
 
     dispatch(editTable(newData));
     navigate("/case-manager/table");
-    openNotificationWithIcon('success','Sửa thành công ')
+    openNotificationWithIcon("success", "Sửa thành công ");
   };
 
   return (
     <div>
       <h5 className={styles.title}>Sửa bàn</h5>
-      <Form {...formItemLayout} onFinish={uploadTable}>
-        <Form.Item
-          name="name"
-          label="Tên bàn"
-          labelAlign="left"
-          rules={[
-            {
-              required: true,
-              message: "Bạn chưa có thay đổi gì!",
-            },
-          ]}
-        >
-          <Input
-            defaultValue={
-              tables?.length > 0 && tables.find((item) => item._id == id).name
-            }
-          />
-        </Form.Item>
+      {table !== undefined && (
+        <Form {...formItemLayout} onFinish={uploadTable}>
+          <Form.Item name="name" label="Tên bàn" labelAlign="left">
+            <Input defaultValue={table?.name} />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
-            <Link to="/case-manager/table">Quay lại</Link>
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Sửa
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
+              <Link to="/case-manager/table">Quay lại</Link>
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Sửa
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
     </div>
   );
 };

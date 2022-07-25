@@ -20,16 +20,30 @@ import AddTable from "./Manage/Table/AddTable";
 import EditTable from "./Manage/Table/EditTable";
 import EditPro from "./Manage/Products/EditPro";
 import ListStatistical from "./Manage/Statistical/ListStatistical";
+import { useEffect, useState } from "react";
+import './App.css'
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={user ? (<Navigate to='/floor/'/>) : <Signin />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<PicturesWall />} />
-        <Route path="/floor/" element={<LayoutWeb />}>
+        <Route
+          path="/"
+          element={user !== null ? <Navigate to="/floor/" /> : <Signin />}
+        />
+        <Route
+          path="/signin"
+          element={user !== null ? <Navigate to="/floor/" /> : <Signin />}
+        />
+        <Route
+          path="/signup"
+          element={user !== null ? <Navigate to="/floor/" /> : <PicturesWall />}
+        />
+        <Route
+          path="/floor/"
+          element={user == null ? <Navigate to="/signin" /> : <LayoutWeb />}
+        >
           <Route
             index
             path="floor_id=:floor_id"
@@ -39,10 +53,13 @@ function App() {
 
         <Route
           path="/floor/floor_id=:floor_id/table_id=:table_id/order"
-          element={<Orders />}
+          element={user == null ? <Navigate to="/signin" /> : <Orders />}
         />
 
-        <Route path="/case-manager/" element={<LayoutAdmin />}>
+        <Route
+          path="/case-manager/"
+          element={user == null ? <Navigate to="/signin" /> : <LayoutAdmin />}
+        >
           {/* cate */}
           <Route path="categoris/" element={<ListCate />}></Route>
           <Route path="categoris/add" element={<AddCate />} />

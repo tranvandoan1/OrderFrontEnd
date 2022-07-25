@@ -45,3 +45,11 @@
   padding: 10px;
   border-radius: 100%;
 }
+.input {
+  border: 0 !important;
+}
+.input:focus{
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}

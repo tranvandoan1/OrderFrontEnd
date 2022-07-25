@@ -13,9 +13,14 @@ const { Panel } = Collapse;
 
 const ListOder = () => {
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const orders = useSelector((data) => data.order.value);
   const orderdetails = useSelector((data) => data.orderdetail.value);
   const tables = useSelector((data) => data.table.value);
+  
+  const orderUser = orders?.filter((item) => item.user_id == user._id);
+  console.log(orderUser)
   useEffect(() => {
     dispatch(getOrder());
     dispatch(getOrderDetail());
@@ -32,88 +37,92 @@ const ListOder = () => {
   return (
     <div style={{ height: "100vh", background: "#fff", overflow: "hidden" }}>
       <div className="srcoll">
-        {orders.length > 0 ? (
+        {orderUser?.length > 0 ? (
           <Collapse accordion>
-            {orders.map((item, index) => {
-              const time = new Date(item.createdAt);
-              return (
-                <Panel
-                  header={`#${
-                    item._id
-                  }${" ----------- "} Ngày ${time.getDate()}-${
-                    time.getMonth() + 1
-                  }-${time.getFullYear()}`}
-                  key={index}
-                >
-                  <div className="header-order" style={{ textAlign: "left" }}>
-                    <span>Tên khác hàng : {item.customer_name}</span>
-                    <br />
-                    {tables.map(
-                      (table) =>
-                        table._id == item.id_table && (
-                          <span>Tên bàn : {table.name}</span>
-                        )
-                    )}
-                    <br />
-                    {item.sale > 0 && <>Giảm : {item.sale} %</>}
-                  </div>
-                  <br />
-                  <Descriptions bordered size='default'>
-                    {orderdetails.map((itemDetail) => {
-                      if (itemDetail.bill == item.bill) {
-                        return (
-                          <div key={itemDetail._id}>
-                            <Descriptions.Item label="Sản phẩm">
-                              {itemDetail.namePro} (
-                              <span style={{ color: "red", fontWeight: "600" }}>
-                                x{itemDetail.quantity}
-                              </span>
-                              ) :
-                              {itemDetail.price
-                                .toString()
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                              {itemDetail.weight ? "VND/KG" : "VND"}
-                              <br />
-                              {itemDetail.weight && (
-                                <>Cân nặng : {itemDetail.weight} KG</>
-                              )}
-                            </Descriptions.Item>
-
-                            <br />
-                          </div>
-                        );
-                      }
-                    })}
-                  </Descriptions>
-                  <br></br>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
+            {orderUser.map((item, index) => {
+              if (item.user_id == user._id) {
+                const time = new Date(item.createdAt);
+                return (
+                  <Panel
+                    header={`#${
+                      item._id
+                    }${" ----------- "} Ngày ${time.getDate()}-${
+                      time.getMonth() + 1
+                    }-${time.getFullYear()}`}
+                    key={index}
                   >
-                    <span
+                    <div className="header-order" style={{ textAlign: "left" }}>
+                      <span>Tên khác hàng : {item.customer_name}</span>
+                      <br />
+                      {tables.map(
+                        (table) =>
+                          table._id == item.id_table && (
+                            <span>Tên bàn : {table.name}</span>
+                          )
+                      )}
+                      <br />
+                      {item.sale > 0 && <>Giảm : {item.sale} %</>}
+                    </div>
+                    <br />
+                    <Descriptions bordered size="default">
+                      {orderdetails.map((itemDetail) => {
+                        if (itemDetail.bill == item.bill) {
+                          return (
+                            <div key={itemDetail._id}>
+                              <Descriptions.Item label="Sản phẩm">
+                                {itemDetail.namePro} (
+                                <span
+                                  style={{ color: "red", fontWeight: "600" }}
+                                >
+                                  x{itemDetail.quantity}
+                                </span>
+                                ) :
+                                {itemDetail.price
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                {itemDetail.weight ? "VND/KG" : "VND"}
+                                <br />
+                                {itemDetail.weight && (
+                                  <>Cân nặng : {itemDetail.weight} KG</>
+                                )}
+                              </Descriptions.Item>
+
+                              <br />
+                            </div>
+                          );
+                        }
+                      })}
+                    </Descriptions>
+                    <br></br>
+                    <div
                       style={{
-                        width: "100%",
-                        fontSize: "1.1rem",
-                        fontWeight: "600",
-                        borderTop: "1px solid rgb(218, 218, 218)",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      Tổng :{" "}
-                      {item.sum_price
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                      VND
-                    </span>
-                    <DeleteOutlined
-                      style={{ cursor: "pointer", fontSize: 18 }}
-                      onClick={() => deleteOrder(item._id)}
-                    />
-                  </div>
-                </Panel>
-              );
+                      <span
+                        style={{
+                          width: "100%",
+                          fontSize: "1.1rem",
+                          fontWeight: "600",
+                          borderTop: "1px solid rgb(218, 218, 218)",
+                        }}
+                      >
+                        Tổng :{" "}
+                        {Math.ceil(item.sum_price * ((100 - item.sale) / 100))
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                        VND
+                      </span>
+                      <DeleteOutlined
+                        style={{ cursor: "pointer", fontSize: 18 }}
+                        onClick={() => deleteOrder(item._id)}
+                      />
+                    </div>
+                  </Panel>
+                );
+              }
             })}
           </Collapse>
         ) : (

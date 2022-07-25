@@ -49,7 +49,7 @@ const AddTable = () => {
             },
           ]}
         >
-          <Input />
+          <Input placeholder="Bàn"/>
         </Form.Item>
         <Form.Item
           name="floor_id"

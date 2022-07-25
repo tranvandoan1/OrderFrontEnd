@@ -10,12 +10,16 @@ import moment from "moment";
 import Yesterday from "./Yesterday";
 import Year from "./Year";
 import SelectTime from "./SelectTime";
+import { remove } from "../../../API/Order";
 const { Option } = Select;
 
 const List = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [check, setCheck] = useState("today");
   const orders = useSelector((data) => data.order.value);
+  const orderUser = orders?.filter((item) => item.user_id == user._id);
+  console.log(orderUser, "asadas");
   useEffect(() => {
     dispatch(getOrder());
   }, []);
@@ -24,39 +28,43 @@ const List = () => {
   const month = moment().month();
   const year = moment().year();
   const list = () => {
-    if (orders.length > 0) {
+    if (orderUser.length > 0) {
       let order = [];
 
-      orders.filter((item) => {
-        const time = new Date(item.createdAt);
-        if (
-          check == "today"
-            ? date == time.getDate()
-            : check == "yesterDay"
-            ? date - 1 == time.getDate()
-            : " " &&
-              (check == "today" || check == "thisMonth" || check == "yesterDay")
-            ? month + 1 == time.getMonth() + 1
-            : check == "lastMonth"
-            ? month == time.getMonth() + 1
-            : " " && check == "lastYear"
-            ? year - 1 == time.getFullYear()
-            : check == "today" ||
-              check == "thisMonth" ||
-              check == "thisYear" ||
-              check == "yesterDay" ||
-              check == "lastMonth"
-            ? year == time.getFullYear()
-            : " "
-        ) {
-          order.push(item);
+      orderUser.filter((item) => {
+        if (item.user_id == user._id) {
+          const time = new Date(item.createdAt);
+          if (
+            check == "today"
+              ? date == time.getDate()
+              : check == "yesterDay"
+              ? date - 1 == time.getDate()
+              : " " &&
+                (check == "today" ||
+                  check == "thisMonth" ||
+                  check == "yesterDay")
+              ? month + 1 == time.getMonth() + 1
+              : check == "lastMonth"
+              ? month == time.getMonth() + 1
+              : " " && check == "lastYear"
+              ? year - 1 == time.getFullYear()
+              : check == "today" ||
+                check == "thisMonth" ||
+                check == "thisYear" ||
+                check == "yesterDay" ||
+                check == "lastMonth"
+              ? year == time.getFullYear()
+              : " "
+          ) {
+            order.push(item);
+          }
         }
       });
 
       // tính tổng tiền
       let sum = 0;
       for (let i = 0; i < order.length; i++) {
-        sum += order[i].sum_price;
+        sum += Math.ceil(order[i].sum_price * ((100 - order[i].sale) / 100));
       }
 
       const data = [
@@ -93,10 +101,9 @@ const List = () => {
         },
         tooltip: {
           customContent: (title, items) => {
-            console.log(items);
             return (
               <>
-                <h6 style={{ marginTop: 10,fontSize:13 }}>{title}</h6>
+                <h6 style={{ marginTop: 10, fontSize: 13 }}>{title}</h6>
                 <ul style={{ paddingLeft: 0 }}>
                   {items?.map((item, index) => {
                     const { name, value, color } = item;
@@ -123,7 +130,11 @@ const List = () => {
                           }}
                         >
                           <span style={{ margiRight: 16 }}>
-                            Tiền : {value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
+                            Tiền :{" "}
+                            {value
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                            VNĐ
                           </span>
                         </span>
                       </li>
@@ -205,6 +216,8 @@ const List = () => {
           )}
         </>
       );
+    } else {
+      return "Chưa có doanh số";
     }
   };
   const handleChange = (value) => {

@@ -15,7 +15,7 @@ const Account = () => {
     setEdit(true);
   };
   const loadFile = (event) => {
-    console.log(event.target.files[0])
+    console.log(event.target.files[0]);
     setEdit(URL.createObjectURL(event.target.files[0]));
   };
   const onFinish = async (values) => {
@@ -132,10 +132,15 @@ const Account = () => {
                   name="name"
                   style={{ marginTop: 30 }}
                 >
-                  <Input placeholder="Basic usage" defaultValue={user.name} />
+                  <Input
+                    className={styles.input}
+                    placeholder="Basic usage"
+                    defaultValue={user.name}
+                  />
                 </Form.Item>
                 <Form.Item label="Email" name="email" style={{ marginTop: 30 }}>
                   <Input
+                    className={styles.input}
                     placeholder="Basic usage"
                     defaultValue={user.email}
                     id="emails"
@@ -146,7 +151,11 @@ const Account = () => {
                   name="phone"
                   style={{ marginTop: 30 }}
                 >
-                  <Input placeholder="Basic usage" defaultValue={user.phone} />
+                  <Input
+                    className={styles.input}
+                    placeholder="Basic usage"
+                    defaultValue={user.phone}
+                  />
                 </Form.Item>
 
                 <div style={{ marginTop: 20 }}>

@@ -1,51 +1,74 @@
 import { Button, Form, Input, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { getCategori } from "../../features/Categoris/CategoriSlice";
+import { getCategori, uploadCategori } from "../../features/Categoris/CategoriSlice";
 import styles from "../../css/AdminCate.module.css";
 import { useForm } from "react-hook-form";
-
+import { openNotificationWithIcon } from "./../../Notification";
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
 const EditCate = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const categoris = useSelector((data) => data.categori.value);
-  console.log(categoris);
+  const categori = categoris?.find((item) => item._id == id);
   useEffect(() => {
     dispatch(getCategori());
   }, []);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => {
-    console.log(categoris.find((item) => item._id == id).name);
-    console.log(data)
+
+  const editCate = (values) => {
+    let formData = new FormData();
+    formData.append(
+      "name",
+      values.name == undefined ? categori.name : values.name
+    );
+    dispatch(uploadCategori({ id: id, data: formData }));
+    navigate("/case-manager/categoris");
+    openNotificationWithIcon("success", "Sửa thành công ");
   };
 
   return (
     <>
       <h4 className={styles.h4}>Sửa danh mục</h4>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.name_cate}>
-          <span className={styles.title}>Tên danh mục</span>
-          <input
-            className={styles.input}
-            defaultValue={
-              categoris.length > 0 &&
-              categoris.find((item) => item._id == id).name
-            }
-            {...register("name")}
-          />
-          {errors.name && <span>Chưa nhập tên danh mục !</span>}
-        </div>
-        <button className={styles.button} type="submit">
-          Thêm
-        </button>
-      </form>
+      {categori !== undefined && (
+        <Form
+          name="basic"
+          initialValues={{
+            remember: true,
+          }}
+          {...formItemLayout}
+          onFinish={editCate}
+          autoComplete="off"
+        >
+          <Form.Item label="Tên danh mục" name="name" labelAlign="left">
+            <Input defaultValue={categori?.name} placeholder="Tên danh mục" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
+              <Link to="/case-manager/categoris">Quay lại</Link>
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Sửa
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
     </>
   );
 };

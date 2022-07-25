@@ -59,17 +59,28 @@ const ListTable = () => {
   ];
   return (
     <div>
-      <Button type="primary">
-        <Link to="add">Thêm bàn</Link>
-      </Button>
-      <br />
-      <br />
+      <div
+        className="header"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
+        <h3>Bàn</h3>
+        <Button type="primary">
+          <Link to="add">Thêm bàn</Link>
+        </Button>
+      </div>
+      <hr
+        style={{
+          color: "rgb(165, 165, 165)",
+          marginBottom: 20,
+          marginTop: 0,
+        }}
+      />
       <Table
         columns={columns}
         rowKey={(item) => item._id}
         style={{ textAlign: "center" }}
         dataSource={tables}
-        bordered 
+        bordered
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Layout, Menu, Dropdown, Button, Avatar, Row, Col, Select } from "antd";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getTable } from "../features/TableSlice/TableSlice";
 import { getSaveOrder } from "../features/saveorderSlice/saveOrderSlice";
@@ -12,10 +12,11 @@ import {
 } from "@ant-design/icons";
 import { getFloor } from "../features/FloorSlice/FloorSlice";
 import CheckTable from "./CheckTable";
-import '../css/layoutWeb.css'
+import "../css/layoutWeb.css";
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutWeb = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const floors = useSelector((data) => data.floor.value);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -28,6 +29,7 @@ const LayoutWeb = () => {
   const signOut = () => {
     if (confirm("Bạn có muốn đăng xuất không !")) {
       localStorage.removeItem("user");
+      navigate("/");
     }
   };
 
@@ -47,14 +49,13 @@ const LayoutWeb = () => {
       </Menu.Item>
     </Menu>
   );
-
   return (
     <div
       style={{ backgroundColor: "rgb(243, 243, 243)" }}
       className={styles.main}
     >
       <Header className={styles.header}>
-        <Row style={{margin:'0 20px'}}>
+        <Row style={{ margin: "0 20px" }}>
           <Col xs={12} sm={4} md={12} lg={18} xl={18}>
             <CheckTable />
           </Col>
@@ -68,7 +69,7 @@ const LayoutWeb = () => {
           >
             <Dropdown overlay={menu} arrow>
               <span>
-                <Avatar size={44} src={user.avatar} /> <span>{user.name}</span>
+                <Avatar size={44} src={user?.avatar} /> <span>{user?.name}</span>
               </span>
             </Dropdown>
           </Col>

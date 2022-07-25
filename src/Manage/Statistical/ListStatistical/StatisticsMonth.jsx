@@ -7,8 +7,10 @@ import { Row, Statistic } from "antd";
 
 const StatisticsMonth = () => {
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("user"));
   const [monthPrice, setMonthPrice] = useState();
   const orders = useSelector((data) => data.order.value);
+  const orderUser = orders?.filter((item) => item.user_id == user._id);
   useEffect(() => {
     dispatch(getOrder());
   }, []);
@@ -16,7 +18,7 @@ const StatisticsMonth = () => {
   const dow = date.day();
   console.log(dow);
   const list = () => {
-    if (orders.length > 0) {
+    if (orderUser.length > 0) {
       // lấy ngày trong tuần
       function getThisWeekDates() {
         var weekDates = [];
@@ -39,7 +41,7 @@ const StatisticsMonth = () => {
 
       console.log(dayOfWeek);
       const newOrder = [];
-      orders.map((item) => {
+      orderUser.map((item) => {
         dayOfWeek.map((week) => {
           const time = new Date(item.createdAt);
           // console.log(week.date)

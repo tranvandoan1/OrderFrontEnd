@@ -13,11 +13,8 @@ table tr th {
   font-size: 0.9rem !important;
   text-align: center !important;
 }
-.srcoll {
-  overflow: auto;
-  height: 100%;
-}
-.srcoll::-webkit-scrollbar{
-    width: 0;
-    height: 0;
+
+.ant-layout::-webkit-scrollbar{
+    width: 0 !important;
+    height: 0 !important;
 }

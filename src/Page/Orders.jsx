@@ -12,6 +12,8 @@ import { DoubleLeftOutlined } from "@ant-design/icons";
 import SelectedProduct from "./SelectedProduct";
 import styles from "../css/Order.module.css";
 import { getProductAll } from "./../features/ProductsSlice/ProductSlice";
+import { getCategori } from "./../features/Categoris/CategoriSlice";
+import { getSaveOrder } from "./../features/saveorderSlice/saveOrderSlice";
 const Orders = () => {
   const [productOrder, setProductOrder] = useState([]); //lấy sản phẩm ko có kg
   const [productOrderWeight, setProductOrderWeight] = useState([]); //lấy sản phẩm có kg
@@ -27,6 +29,8 @@ const Orders = () => {
   const categoris = useSelector((data) => data.categori.value);
   useEffect(() => {
     dispatch(getProductAll());
+    dispatch(getCategori());
+    dispatch(getSaveOrder());
   }, []);
   const apply = () => {
     if (Number(productOrderWeight.weight) == Number(valueWeight)) {
@@ -152,7 +156,7 @@ const Orders = () => {
         <Col xs={12} sm={6} md={12} lg={14} xl={14}>
           <div className="products">
             <Row>
-              {(proSelect.length >= 1 ? proSelect : products).map(
+              {(proSelect?.length >= 1 ? proSelect : products)?.map(
                 (item_pro) => {
                   return (
                     <Col
