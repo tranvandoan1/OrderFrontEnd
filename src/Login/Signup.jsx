@@ -1,130 +1,175 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Upload, Modal } from "antd";
-import { UserOutlined, LockOutlined, UploadOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Upload, Modal, message, Spin } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  UploadOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import "../css/Signin.css";
 import { Link, useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import UserAPI from "../API/Users";
-import { async } from "@firebase/util";
+import styles from "../css/Home.module.css";
 const Signup = () => {
-  let navigate = useNavigate();
-
-  const signup = async (values) => {
-    console.log(values);
-    const photo = document.querySelector("#photo").files[0];
-    const imageRef = ref(storage, "images");
-    uploadBytes(imageRef, photo).then(() => {
-      getDownloadURL(imageRef).then(async (url) => {
-        console.log(url);
-        // setImage(url)
-        if (url !== undefined) {
-          const user = {
-            email: values.email,
-            avatar: url,
-            name: values.name,
-            phone: values.phone,
-            password: values.password,
-          };
-          await UserAPI.signup(user);
-        } else {
-          const user = {
-            email: values.email,
-            avatar: "",
-            name: values.name,
-            phone: values.phone,
-            password: values.password,
-          };
-          await UserAPI.signup(user);
-        }
-      });
-    });
-
-    navigate("/signin");
-  };
-
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
 
-  return (
-    <Modal visible={true} className="background">
-      <div
-        className="logo"
-        style={{ textAlign: "center", marginBottom: "20px" }}
-      >
-        <img
-          src="https://www.jedecore.com/gif/bon-appetit/bon-appetit-017.gif"
-          alt=""
-        />
-      </div>
-      <h3 style={{ textAlign: "center", margin: "20px 0", color: "#ee4d2d" }}>
-        Đăng ký
-      </h3>
-      <Form
-        name="normal_login"
-        className="login-form"
-        initialValues={{ remember: true }}
-        onFinish={signup}
-      >
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Họ và Tên"
-          />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          rules={[{ required: true, message: "Vui lòng nhập email!" }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Email"
-          />
-        </Form.Item>
+  const UploadAvatatr = (file) => {
+    const imageRef = ref(storage, `images/${file.name}`);
+    setLoading(true);
+    uploadBytes(imageRef, file).then(() => {
+      getDownloadURL(imageRef).then(async (url) => {
+        await setImage(url);
+        setLoading(false);
+      });
+    });
+  };
+  const signup = async (values) => {
+    const user = {
+      email: values.email,
+      avatar: String(image).length <= 0 ? "" : image,
+      name: values.name,
+      phone: values.phone,
+      password: values.password,
+      login:0
+    };
+    await UserAPI.signup(user);
 
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Item>
-        <Form.Item
-          name="phone"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="phone"
-            placeholder="Số điện thoại"
-          />
-        </Form.Item>
-        <Form.Item name="avatar" label="Avatar">
-          <label htmlFor="photo">
-            <UploadOutlined />
-            <img src={image} alt="" />
-          </label>
-          <input type="file" style={{ display: "none" }} id="photo" />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
+    alert("Đăng ký thành công. Hãy đăng nhập");
+    window.location.href = "/signin";
+  };
+
+  return (
+    <div className="backgroundd">
+      <div className="back">
+        <div className="form-signin">
+          <div
+            className="logo"
+            style={{ textAlign: "center", marginBottom: "20px" }}
+          >
+            <img
+              src="https://123design.org/wp-content/uploads/2020/07/LOGOLM0200-Chibi-%C4%90%E1%BB%87-nh%E1%BA%A5t-%C4%91%E1%BA%A7u-b%E1%BA%BFp-nh%C3%AD-Vua-%C4%91%E1%BA%A7u-b%E1%BA%BFp.jpg"
+              alt=""
+            />
+          </div>
+          <h3
+            style={{ textAlign: "center", margin: "20px 0", color: "#ee4d2d" }}
           >
             Đăng ký
-          </Button>
-          <Link style={{ marginLeft: "10px" }} to="/signin">
-            Đăng nhập
-          </Link>
-        </Form.Item>
-      </Form>
-    </Modal>
+          </h3>
+          <Form
+            name="normal_login"
+            className="login-form"
+            initialValues={{ remember: true }}
+            onFinish={signup}
+          >
+            <Form.Item
+              name="name"
+              rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Họ và Tên"
+              />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Email"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: "Please input your Password!" },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item
+              name="phone"
+              rules={[
+                { required: true, message: "Please input your Password!" },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="phone"
+                placeholder="Số điện thoại"
+              />
+            </Form.Item>
+            <Form.Item name="avatar" label="Avatar">
+              {/* <label
+                htmlFor="photo"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <UploadOutlined style={{ cursor: "pointer" }} />
+                <img src={image} alt="" />
+              </label>
+              <input
+                type="file"
+                style={{ display: "none" }}
+                id="photo"
+                onClick={() => Upload5()}
+              /> */}
+              <Upload
+                listType="picture-card"
+                showUploadList={false}
+                beforeUpload={UploadAvatatr}
+              >
+                {image ? (
+                  <div className={styles.box_image}>
+                    <img src={image} className="image" />
+                  </div>
+                ) : (
+                  <div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      {loading == true ? (
+                        <Spin />
+                      ) : (
+                        <PlusCircleOutlined
+                          style={{
+                            fontSize: 30,
+                            opacity: 0.3,
+                            color: "blue",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Upload>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+              >
+                Đăng ký
+              </Button>
+              <Link style={{ marginLeft: "10px" }} to="/signin">
+                Đăng nhập
+              </Link>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+    </div>
   );
 };
 

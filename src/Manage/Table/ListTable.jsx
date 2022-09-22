@@ -1,23 +1,25 @@
-import { Button, Space, Table } from "antd";
-import React, { useEffect } from "react";
+import { Button, message, Space, Spin, Table } from "antd";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getTable, removeTable } from "./../../features/TableSlice/TableSlice";
+import {
+  getAllTable,
+  removeTable,
+} from "./../../features/TableSlice/TableSlice";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { getFloor } from "../../features/FloorSlice/FloorSlice";
-import { openNotificationWithIcon } from "../../Notification";
 const ListTable = () => {
   const dispatch = useDispatch();
   const tables = useSelector((data) => data.table.value);
-  const floors = useSelector((data) => data.floor.value);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    dispatch(getTable());
-    dispatch(getFloor());
+    dispatch(getAllTable());
   }, []);
-  const deleteCate = (id) => {
+  const deleteCate = async (id) => {
     if (confirm("Bạn có muốn xóa không ?")) {
-      dispatch(removeTable(id));
-      openNotificationWithIcon("success", "Xóa thành công ");
+      setLoading(true);
+      await dispatch(removeTable(id));
+      setLoading(false);
+      message.success("Xóa thành công");
     }
   };
   const columns = [
@@ -27,13 +29,7 @@ const ListTable = () => {
       key: "name",
       render: (text) => <a>{text}</a>,
     },
-    {
-      title: "Tầng",
-      dataIndex: "floor_id",
-      key: "floor_id",
-      render: (floor_id) =>
-        floors.map((item) => item._id == floor_id && item.name),
-    },
+
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
@@ -44,7 +40,7 @@ const ListTable = () => {
       render: (data) => (
         <>
           <Space size="middle" style={{ marginRight: 10 }}>
-            <Link to={`/case-manager/table/edit=${data._id}`}>
+            <Link to={`/manager/table/edit=${data._id}`}>
               <EditOutlined />
             </Link>
           </Space>
@@ -77,6 +73,7 @@ const ListTable = () => {
       />
       <Table
         columns={columns}
+        loading={loading}
         rowKey={(item) => item._id}
         style={{ textAlign: "center" }}
         dataSource={tables}

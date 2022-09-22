@@ -1,10 +1,4 @@
-/* .table::-webkit-scrollbar{
-    width: 0;
-    height: 0;
-}
-.ant-table-cell-scrollbar{
-    display: none;
-} */
+
 .ant-modal {
   top: 50px !important;
 }

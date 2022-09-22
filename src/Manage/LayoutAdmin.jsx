@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Avatar, Layout, Menu } from "antd";
+import React, { useEffect, useState } from "react";
+import { Avatar, Layout, Menu, message } from "antd";
 import {
   ShoppingCartOutlined,
   ProfileOutlined,
@@ -8,14 +8,35 @@ import {
   RollbackOutlined,
   BorderlessTableOutlined,
   BarChartOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { NavLink, Outlet } from "react-router-dom";
 import styles from "../css/LayoutAdmin.module.css";
-import '../css/Order.css'
+import "../css/Order.css";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getProductAll } from "./../features/ProductsSlice/ProductSlice";
+import { getAllTable } from "../features/TableSlice/TableSlice";
+import { getCategori } from "./../features/Categoris/CategoriSlice";
+import { getUser } from "../features/User/UserSlice";
 const { Header, Content, Footer, Sider } = Layout;
 
 const LayoutAdmin = () => {
   const [cateName, setCateName] = useState(false);
+  const user = useSelector((data) => data.user.value);
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
+  const dispatch = useDispatch();
+  const products = useSelector((data) => data.product.value);
+  const tables = useSelector((data) => data.table.value);
+  const categoris = useSelector((data) => data.categori.value);
+  useEffect(() => {
+    dispatch(getProductAll());
+    dispatch(getCategori());
+    dispatch(getAllTable());
+  }, []);
+  const key = JSON.parse(localStorage.getItem("key"));
   return (
     <Layout hasSider>
       <Sider
@@ -30,40 +51,43 @@ const LayoutAdmin = () => {
       >
         <div className={styles.avatar_header}>
           <Avatar
-            src="https://123design.org/wp-content/uploads/2020/07/LOGOLM0200-Chibi-%C4%90%E1%BB%87-nh%E1%BA%A5t-%C4%91%E1%BA%A7u-b%E1%BA%BFp-nh%C3%AD-Vua-%C4%91%E1%BA%A7u-b%E1%BA%BFp.jpg"
+            src={user.avatarRestaurant}
             style={{ margin: "10px" }}
             size={60}
             alt=""
           />
-          <span className={styles.title_logo}>BOM BOM</span>
+          <span className={styles.title_logo}>{user.nameRestaurant}</span>
         </div>
         <br />
         <Menu
           theme="dark"
           mode="inline"
           className={styles.menu}
-          defaultSelectedKeys={["7"]}
+          defaultSelectedKeys={
+            key == null
+              ? [
+                  user?.loginWeb == 0 ||
+                  products?.length > 0 ||
+                  categoris?.length > 0 ||
+                  tables?.length > 0
+                    ? "1"
+                    : "1",
+                ]
+              : key
+          }
           items={[
-            {
-              key: "7",
+            (user?.loginWeb !== 0 ||
+              products?.length > 0 ||
+              categoris?.length > 0 ||
+              tables?.length > 0) && {
+              key: "1",
               icon: <BarChartOutlined className={styles.icon} />,
               label: "Thông kê",
               itemIcon: <NavLink to="statistical" />,
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
-              },
-            },
-            {
-              key: "1",
-              icon: (
-                <ProfileOutlined className={cateName == false && styles.icon} />
-              ),
-              label: "Tầng",
-              itemIcon: <NavLink to="floor" />,
-              style: { color: "black" },
-              onClick: () => {
-                setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["1"]));
               },
             },
             {
@@ -78,6 +102,7 @@ const LayoutAdmin = () => {
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["2"]));
               },
             },
             {
@@ -90,6 +115,7 @@ const LayoutAdmin = () => {
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["3"]));
               },
             },
             {
@@ -102,6 +128,7 @@ const LayoutAdmin = () => {
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["4"]));
               },
             },
 
@@ -117,6 +144,7 @@ const LayoutAdmin = () => {
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["5"]));
               },
             },
             {
@@ -129,17 +157,33 @@ const LayoutAdmin = () => {
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["6"]));
               },
             },
-
             {
-              key: "8",
-              icon: <RollbackOutlined className={styles.icon} />,
-              label: "Quay lại",
-              itemIcon: <NavLink to="/floor" />,
+              key: "7",
+              icon: (
+                <SettingOutlined className={cateName == false && styles.icon} />
+              ),
+              label: "Cài đặt",
+              itemIcon: <NavLink to="setting" />,
               style: { color: "black" },
               onClick: () => {
                 setCateName(true);
+                localStorage.setItem("key", JSON.stringify(["7"]));
+              },
+            },
+            (tables?.length > 0 ||
+              products?.length > 0 ||
+              categoris?.length > 0) && {
+              key: "8",
+              icon: <RollbackOutlined className={styles.icon} />,
+              label: "Quay lại",
+              itemIcon: <NavLink to="/tables" />,
+              style: { color: "black" },
+              onClick: () => {
+                setCateName(true);
+                localStorage.removeItem("key");
               },
             },
           ]}

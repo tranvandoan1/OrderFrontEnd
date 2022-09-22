@@ -3,56 +3,65 @@ import React, { useEffect, useState } from "react";
 import styles from "../../../css/CssAdmin.module.css";
 import { Bar } from "@ant-design/plots";
 import { useSelector, useDispatch } from "react-redux";
-import { getOrder } from "./../../../features/Order/Order";
+import { getAllOrder } from "./../../../features/Order/Order";
 import moment from "moment";
+import Year from "./Year";
+import Month from "./Month";
+import styles1 from "../../../css/Home.module.css";
+import { EyeOutlined } from "@ant-design/icons";
 
 const SelectTime = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const dipsatch = useDispatch();
   const orders = useSelector((data) => data.order.value);
-  const orderUser = orders?.filter((item) => item.id_user == user._id);
+  const [detailStatistic, setDetailStatistic] = useState(false);
   const [date, setDate] = useState();
   const [check, setCheck] = useState();
 
   useEffect(() => {
-    dipsatch(getOrder());
+    dipsatch(getAllOrder());
   }, []);
 
   const onChange = (date, dateString) => {
-    console.log(date, dateString);
     setDate(dateString);
-    // setIsModalVisible(false);
   };
-  // const [isModalVisible, setIsModalVisible] = useState(true);
-
-  // const handleCancel = () => {
-  //   setIsModalVisible(false);
-  // };
 
   const datee = moment().date();
   const month = moment().month();
   const year = moment().year();
   const list = () => {
-    if (orderUser.length > 0) {
+    if (orders.length > 0) {
       const timeSelect = new Date(date);
-      const order = orderUser.filter((item) => {
-        const time = new Date(item.createdAt);
 
+      const order = orders.filter((item) => {
+        const time = new Date(item.createdAt);
         if (
-          time.getDate() == timeSelect.getDate() &&
-          time.getMonth() + 1 == timeSelect.getMonth() + 1 &&
-          time.getFullYear() == moment().year()
+          check == 1
+            ? time.getDate() == timeSelect.getDate() &&
+              time.getMonth() + 1 == timeSelect.getMonth() + 1 &&
+              time.getFullYear() == timeSelect.getFullYear()
+            : check == 2
+            ? time.getMonth() + 1 == timeSelect.getMonth() + 1 &&
+              time.getFullYear() == timeSelect.getFullYear()
+            : time.getFullYear() == timeSelect.getFullYear()
         ) {
           return item;
         }
       });
       let sum = 0;
       for (let i = 0; i < order.length; i++) {
-        sum += order[i].sum_price;
+        sum += Math.ceil(order[i].sumPrice * ((100 - order[i].sale) / 100));
       }
+
       const data = [
         {
-          day: date !== undefined ? date : "",
+          day: `${
+            check == 1
+              ? `Ngày ${timeSelect.getDate()}`
+              : check == 2
+              ? `Tháng ${timeSelect.getMonth() + 1}`
+              : `Năm ${timeSelect.getFullYear()}`
+          }`,
           price: sum,
         },
       ];
@@ -93,7 +102,7 @@ const SelectTime = () => {
               title="Ngày chọn"
               value={
                 date ==
-                `${year}-${
+                `${check == 3 ? `${year} ` : year}-${
                   `${month}`.length == 1 ? `0${month + 1}` : month + 1
                 }-${datee}`
                   ? "Hôm nay"
@@ -108,12 +117,35 @@ const SelectTime = () => {
                 margin: "0 32px",
               }}
             />
+            {(check == 2 ||
+              check == "thisYear" ||
+              check == "lastMonth" ||
+              check == 3) &&
+              sum !== 0 && (
+                <div className="detail">
+                  <Statistic
+                    title="Xem chi tiết"
+                    value=""
+                    suffix={
+                      <span style={{ cursor: "pointer" }}>
+                        <EyeOutlined
+                          style={{ color: "yellowgreen" }}
+                          onClick={() => setDetailStatistic(true)}
+                        />
+                      </span>
+                    }
+                  />
+                </div>
+              )}
           </Row>
           <br />
           {sum !== 0 ? (
             <Bar {...config} style={{ height: 80 }} />
           ) : (
-            "Chưa có doanh số"
+            <span style={{ color: "red", fontSize: 18, fontWeight: "500" }}>
+              {" "}
+              Chưa có doanh số
+            </span>
           )}
         </>
       );
@@ -122,14 +154,21 @@ const SelectTime = () => {
   const handleChange = (value) => {
     setCheck(value);
   };
+  window.addEventListener("click", function (e) {
+    if (e.target == document.getElementById("book_table")) {
+      setDetailStatistic(false);
+    }
+  });
+  const time=new Date(date)
 
   return (
     <>
-      Chọn :{" "}
+      Xem doanh số theo :{" "}
       <Select
         style={{
           width: 120,
           marginRight: 20,
+          marginBottom: 20,
         }}
         onChange={handleChange}
         placeholder="Chọn"
@@ -140,15 +179,56 @@ const SelectTime = () => {
       </Select>
       {check !== undefined && (
         <>
-          Chọn ngày : <DatePicker onChange={onChange} />
+          Chọn {check == 1 ? "ngày" : check == 2 ? "tháng" : "năm"} :{" "}
+          <DatePicker
+            onChange={onChange}
+            picker={check == 1 ? "" : check == 2 ? "month" : "year"}
+          />
         </>
       )}
-      {/* <br />
-      <br />
-      <Modal title="Chọn ngày" visible={isModalVisible} onCancel={handleCancel}>
-        <DatePicker onChange={onChange} style={{ width: "100%" }} />
-      </Modal> */}
       {date !== undefined && list()}
+      <div
+        id="book_table"
+        className={styles1.info_book_table}
+        style={
+          detailStatistic == true
+            ? {
+                transform: `scale(1,1)`,
+                visibility: "visible",
+                opacity: 1,
+                zIndex: 1000,
+              }
+            : {}
+        }
+      >
+        <div
+          style={{
+            background: "#fff",
+            width: 1000,
+            borderRadius: 2,
+            overflow: "hidden",
+            height: 600,
+          }}
+          className={styles1.table_book_table}
+        >
+          <div
+            style={{
+              height: "100%",
+              overflow: "scroll",
+              padding: 20,
+            }}
+            className={styles.statisticsMonth}
+          >
+            {check == 2 ? (
+              <Month check={time.getMonth()+1} />
+            ) : check == 3 ? (
+              <Year check={time.getFullYear()} />
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 };

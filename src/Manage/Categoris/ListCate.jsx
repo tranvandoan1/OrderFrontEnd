@@ -1,5 +1,5 @@
-import React from "react";
-import { Table, Button, Space } from "antd";
+import React, { useState } from "react";
+import { Table, Button, Space, message, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {
@@ -8,9 +8,9 @@ import {
 } from "../../features/Categoris/CategoriSlice";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { openNotificationWithIcon } from "../../Notification";
 const ListCate = () => {
   const categoris = useSelector((data) => data.categori.value);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -34,7 +34,7 @@ const ListCate = () => {
       render: (data) => (
         <>
           <Space size="middle" style={{ marginRight: 10 }}>
-            <Link to={`/case-manager/categoris/edit=${data._id}`}>
+            <Link to={`/manager/categoris/edit=${data._id}`}>
               <EditOutlined />
             </Link>
           </Space>
@@ -47,10 +47,12 @@ const ListCate = () => {
       ),
     },
   ];
-  const deleteCate = (data) => {
+  const deleteCate = async (data) => {
     if (confirm("Bạn có muốn xóa không ?")) {
-      dispatch(removeCategori(data));
-      openNotificationWithIcon("success", "Xóa thành công ");
+      setLoading(true);
+      await dispatch(removeCategori(data));
+      setLoading(false);
+      message.success("Xóa thành công");
     }
   };
 
@@ -60,7 +62,7 @@ const ListCate = () => {
         className="header"
         style={{ display: "flex", justifyContent: "space-between" }}
       >
-        <h3>Danh mục</h3>
+        <h3>Danh mục</h3>{" "}
         <Button type="primary">
           <Link to="add">Thêm danh mục</Link>
         </Button>
@@ -74,6 +76,7 @@ const ListCate = () => {
       />
       <Table
         columns={columns}
+        loading={loading}
         rowKey="_id"
         bordered
         style={{ textAlign: "center" }}

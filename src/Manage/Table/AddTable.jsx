@@ -1,22 +1,31 @@
-import React, { useEffect } from "react";
-import { Form, Input, Button, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Select, Spin, message } from "antd";
 import styles from "../../css/LayoutAdmin.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { openNotificationWithIcon } from "../../Notification";
-import { addTablee} from "./../../features/TableSlice/TableSlice";
+import { addTable } from "./../../features/TableSlice/TableSlice";
 import { getFloor } from "./../../features/FloorSlice/FloorSlice";
 const AddTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const floors = useSelector((data) => data.floor.value);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     dispatch(getFloor());
   }, []);
-  const addCate = (values) => {
-    dispatch(addTablee(values));
-    openNotificationWithIcon("success", "Thêm thành công ");
-    navigate("/case-manager/table");
+  const addCate = async (values) => {
+    const newData = {
+      name: values.name,
+      user_id: user._id,
+      nameUser: "",
+      amount: 0,
+      timeBookTable: "null",
+    };
+    setLoading(true)
+    await dispatch(addTable(newData));
+    setLoading(false)
+    navigate("/manager/table");
+    message.success("Thêm thành công");
   };
   const formItemLayout = {
     labelCol: {
@@ -30,6 +39,11 @@ const AddTable = () => {
   };
   return (
     <div>
+      {loading == true && (
+        <div style={{ marginBottom: 10 }}>
+          <Spin />
+        </div>
+      )}
       <h5 className={styles.title}>Thêm bàn</h5>
       <Form
         initialValues={{
@@ -49,34 +63,12 @@ const AddTable = () => {
             },
           ]}
         >
-          <Input placeholder="Bàn"/>
+          <Input placeholder="Bàn" />
         </Form.Item>
-        <Form.Item
-          name="floor_id"
-          labelAlign="left"
-          label="Tầng"
-          rules={[
-            {
-              required: true,
-              message: "Chưa chọn tầng!",
-            },
-          ]}
-        >
-          <Select placeholder="Chọn tầng">
-            {floors.map((item) => (
-              <Option
-                value={item._id}
-                key={item._id}
-                style={{ textTransform: "capitalize" }}
-              >
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
-            <Link to="/case-manager/table">Quay lại</Link>
+            <Link to="/manager/table">Quay lại</Link>
           </Button>
           <Button type="primary" htmlType="submit">
             Thêm

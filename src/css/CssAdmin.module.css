@@ -1,5 +1,4 @@
-.statistical {
-}
+
 .title {
   display: flex;
   justify-content: space-between;
@@ -40,4 +39,8 @@
   color: red;
   font-size: 17px;
   font-weight: 600;
+}
+.statisticsMonth::-webkit-scrollbar{
+  height: 0;
+  width: 0;
 }

@@ -22,7 +22,7 @@ export const remove = (id) => {
     const url = `/categoris/${id}`;
     return axiosClient.delete(url);
 }
-export const uploadCate = (id, data) => {
+export const upload = (id, data) => {
     const url = `/categoris/${id}`;
     return axiosClient.put(url, data);
 }

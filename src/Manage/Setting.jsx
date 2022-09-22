@@ -1,21 +1,23 @@
 import { EditOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, Col, Form, Input, message, Row, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import styles from "../../css/Account.module.css";
+import { upload } from "../API/Users";
+import styles from "../css/Account.module.css";
+import { openNotificationWithIcon } from "../Notification";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase";
-import { editUser, getUser } from "../../features/User/UserSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { storage } from "../firebase";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { editUser, getUser } from "../features/User/UserSlice";
 
-const Account = () => {
+const Setting = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState();
   const user = useSelector((data) => data.user.value);
   useEffect(() => {
     dispatch(getUser());
   }, []);
-  const [loading, setLoading] = useState(false);
-  const [photo, setPhoto] = useState();
-
   const loadFile = (event) => {
     const photo = document.querySelector("#images").files[0];
     const imageRef = ref(storage, `images/${photo.name}`);
@@ -29,28 +31,27 @@ const Account = () => {
   };
   const onFinish = async (values) => {
     const uploadUser = {
-      name: values.name == undefined ? user.name : values.name,
-      email: values.email == undefined ? user.email : values.email,
-      phone: values.phone == undefined ? user.phone : values.phone,
-      avatar: photo !== undefined ? photo : user.avatar,
       _id: user._id,
+      nameRestaurant:
+        values.nameRestaurant == undefined
+          ? user?.nameRestaurant
+          : values.nameRestaurant,
+      avatarRestaurant: photo == undefined ? user?.avatarRestaurant : photo,
     };
     setLoading(true);
     message.warning("Đang tiến hành sửa !");
-    await dispatch(editUser(uploadUser));
+    await dispatch(editUser(uploadUser))
     setPhoto();
     setLoading(false);
     message.success("Sửa thành công");
   };
+  
   return (
     <div>
-      {Object.keys(user).length > 0 && (
+      {Object.keys(user).length>0 && (
         <>
           <div className={styles.header}>
-            <h5>Hồ Sơ Của Tôi</h5>
-            <p style={{ opacity: 0.7 }}>
-              Quản lý thông tin hồ sơ để bảo mật tài khoản
-            </p>
+            <h5>Cài đặt</h5>
           </div>
 
           <Row style={{ marginTop: 10 }}>
@@ -73,37 +74,14 @@ const Account = () => {
                 onFinish={onFinish}
               >
                 <Form.Item
-                  label="Tên của bạn "
-                  name="name"
+                  label="Tên quán"
+                  name="nameRestaurant"
                   style={{ marginTop: 30, fontWeight: "500" }}
                 >
                   <Input
                     className={styles.input}
                     placeholder="Basic usage"
-                    defaultValue={user.name}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  style={{ marginTop: 30, fontWeight: "500" }}
-                >
-                  <Input
-                    className={styles.input}
-                    placeholder="Basic usage"
-                    defaultValue={user.email}
-                    id="emails"
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Số điện thoại"
-                  name="phone"
-                  style={{ marginTop: 30, fontWeight: "500" }}
-                >
-                  <Input
-                    className={styles.input}
-                    placeholder="Basic usage"
-                    defaultValue={`0${user.phone}`}
+                    defaultValue={user?.nameRestaurant}
                   />
                 </Form.Item>
 
@@ -142,7 +120,7 @@ const Account = () => {
               }}
             >
               <div className={styles.user_image}>
-                {user.avatar == "" ? (
+                {String(user.avatarRestaurant).length <= 0 ? (
                   <div className={styles.user_avatar}>
                     <UserOutlined style={{ fontSize: 35, padding: 20 }} />
                   </div>
@@ -155,7 +133,7 @@ const Account = () => {
                 ) : loading == true ? (
                   <Spin size="large" />
                 ) : (
-                  <Avatar size={200} src={user.avatar} />
+                  <Avatar size={200} src={user.avatarRestaurant} />
                 )}
                 {loading !== true && (
                   <label htmlFor="images" className={styles.user_choose_photo}>
@@ -178,4 +156,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default Setting;

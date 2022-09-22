@@ -5,9 +5,8 @@ export const getFloor = createAsyncThunk("floor/getFloor", async () => {
   return floor;
 });
 export const removeFloor = createAsyncThunk("floor/removeFloor", async (id) => {
-  await remove(id);
-  const { data: floor } = await FloorAPI.getAll();
-  return floor;
+  const { data: floors } = await remove(id);
+  return floors;
 });
 export const addFloor = createAsyncThunk("floor/addFloor", async (floor) => {
   const { data } = await add(floor);
@@ -36,7 +35,7 @@ const floorSlice = createSlice({
       state.value = action.payload;
     });
     builder.addCase(addFloor.fulfilled, (state, action) => {
-      state.value.push(action.payload);
+      state.value = action.payload;
     });
     builder.addCase(uploadFloor.fulfilled, (state, action) => {
       state.value = action.payload;

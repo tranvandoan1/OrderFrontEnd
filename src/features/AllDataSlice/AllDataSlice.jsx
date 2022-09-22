@@ -3,23 +3,34 @@ import CateAPI from "../../API/CateAPI";
 import OrderAPI from "../../API/Order";
 import TableAPI from "../../API/TableAPI";
 import ProAPI from "../../API/ProAPI";
-import FloorAPI from "../../API/FloorAPI";
+import { upload } from "../../API/Users";
 
 export const getAll = createAsyncThunk("all/getAll", async () => {
   const { data: products } = await ProAPI.getAll();
   const { data: categoris } = await CateAPI.getAll();
   const { data: orders } = await OrderAPI.getAll();
   const { data: tables } = await TableAPI.getAll();
-  const { data: floors } = await FloorAPI.getAll();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  function getAll(data) {
+    const newData = [];
+    data?.filter((item) => {
+      if (item.user_id == user._id) {
+        newData.push(item);
+      }
+    });
+    return newData;
+  }
+
   const allData = {
-    products: products,
-    categoris: categoris,
-    orders: orders,
-    tables: tables,
-    floors: floors,
+    products: getAll(products),
+    categoris: getAll(categoris),
+    orders: getAll(orders),
+    tables: getAll(tables),
   };
-  return allData
+  return allData;
 });
+
 const allDataSlice = createSlice({
   name: "allData",
   initialState: {

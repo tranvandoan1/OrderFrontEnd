@@ -1,31 +1,42 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import CateAPI, { add, remove, uploadCate } from "../../API/CateAPI";
+import CateAPI, { add, remove, upload } from "../../API/CateAPI";
+async function getAll() {
+  const { data: categoris } = await CateAPI.getAll();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const dataCategoris = [];
+  categoris?.filter((item) => {
+    if (item.user_id == user._id) {
+      dataCategoris.push(item);
+    }
+  });
+
+  return dataCategoris;
+}
 export const getCategori = createAsyncThunk(
   "categori/getCategori",
   async () => {
-    const { data: categoris } = await CateAPI.getAll();
-    return categoris;
+    return getAll();
   }
 );
 export const addCategori = createAsyncThunk(
   "categori/addCategori",
   async (data) => {
     await add(data);
+    return getAll();
   }
 );
 export const removeCategori = createAsyncThunk(
   "categori/removeCategori",
   async (data) => {
-    await remove(data._id);
-    const { data: categoris } = await CateAPI.getAll();
-    return categoris.filter((item) => item._id !== data._id);
+    await remove(data);
+    return getAll();
   }
 );
 export const uploadCategori = createAsyncThunk(
   "categori/uploadCategori",
   async (data) => {
-    const { data: categoris } = await uploadCate(data.id,data.data);
-    return categoris;
+    await upload(data.id, data.data);
+    return getAll();
   }
 );
 const categoriSlice = createSlice({

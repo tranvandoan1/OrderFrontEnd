@@ -47,7 +47,7 @@ const ListStatistical = () => {
       <div className="list">
         <Row>
           <Col xs={12} sm={4} md={12} lg={8} xl={6}>
-            <Link to="/case-manager/table">
+            <Link to="/manager/table">
               <div className={styles.list_cate}>
                 <FileTextOutlined
                   style={{ marginRight: 10, fontSize: 30, color: "chocolate" }}
@@ -58,7 +58,7 @@ const ListStatistical = () => {
             </Link>
           </Col>
           <Col xs={12} sm={4} md={12} lg={8} xl={6}>
-            <Link to="/case-manager/products">
+            <Link to="/manager/products">
               <div className={styles.list_cate}>
                 <FaProductHunt
                   style={{ color: "chocolate", fontSize: 30, marginRight: 10 }}
@@ -69,7 +69,7 @@ const ListStatistical = () => {
             </Link>
           </Col>
           <Col xs={12} sm={4} md={12} lg={8} xl={6}>
-            <Link to="/case-manager/order">
+            <Link to="/manager/order">
               <div className={styles.list_cate}>
                 <FaOpencart
                   style={{ color: "chocolate", fontSize: 30, marginRight: 10 }}
@@ -79,7 +79,7 @@ const ListStatistical = () => {
             </Link>
           </Col>
           <Col xs={12} sm={4} md={12} lg={8} xl={6}>
-            <Link to="/case-manager/table">
+            <Link to="/manager/table">
               <div className={styles.list_cate}>
                 <FaTable
                   style={{ color: "chocolate", fontSize: 30, marginRight: 10 }}

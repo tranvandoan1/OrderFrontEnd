@@ -1,11 +1,13 @@
-import { Button, Form, Input, InputNumber } from "antd";
+import { Button, Form, Input, InputNumber, message, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { getCategori, uploadCategori } from "../../features/Categoris/CategoriSlice";
+import {
+  getCategori,
+  uploadCategori,
+} from "../../features/Categoris/CategoriSlice";
 import styles from "../../css/AdminCate.module.css";
-import { useForm } from "react-hook-form";
 import { openNotificationWithIcon } from "./../../Notification";
 const formItemLayout = {
   labelCol: {
@@ -23,25 +25,28 @@ const EditCate = () => {
   const dispatch = useDispatch();
   const categoris = useSelector((data) => data.categori.value);
   const categori = categoris?.find((item) => item._id == id);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     dispatch(getCategori());
   }, []);
 
-  const editCate = (values) => {
-    let formData = new FormData();
-    formData.append(
-      "name",
-      values.name == undefined ? categori.name : values.name
+  const editCate = async (values) => {
+    setLoading(true);
+    await dispatch(
+      uploadCategori({
+        id: id,
+        data: { name: values.name == undefined ? categori.name : values.name },
+      })
     );
-    dispatch(uploadCategori({ id: id, data: formData }));
-    navigate("/case-manager/categoris");
-    openNotificationWithIcon("success", "Sửa thành công ");
+    setLoading(false);
+    navigate("/manager/categoris");
+    message.success("Sửa thành công");
   };
 
   return (
     <>
-      <h4 className={styles.h4}>Sửa danh mục</h4>
-      {categori !== undefined && (
+      <h5 className={styles.h4}>Sửa danh mục</h5>
+      {categoris.length > 0 && (
         <Form
           name="basic"
           initialValues={{
@@ -61,11 +66,15 @@ const EditCate = () => {
               htmlType="submit"
               style={{ marginRight: 10 }}
             >
-              <Link to="/case-manager/categoris">Quay lại</Link>
+              <Link to="/manager/categoris">Quay lại</Link>
             </Button>
-            <Button type="primary" htmlType="submit">
-              Sửa
-            </Button>
+            {loading == true ? (
+              <Spin style={{ marginLeft: 20 }} />
+            ) : (
+              <Button type="primary" htmlType="submit">
+                Sửa
+              </Button>
+            )}
           </Form.Item>
         </Form>
       )}

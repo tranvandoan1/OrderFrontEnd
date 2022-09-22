@@ -1,4 +1,4 @@
-import { axiosClient } from "./Axios.js";
+import {axiosClient} from './Axios.js';
 const TableAPI = {
   getAll() {
     const url = `/table`;
@@ -10,15 +10,23 @@ const TableAPI = {
   },
 };
 export default TableAPI;
-export const remove = (id) => {
+export const remove = id => {
   const url = `/table/${id}`;
   return axiosClient.delete(url);
 };
-export const addTable = (table) => {
+export const add = table => {
   const url = `/table`;
   return axiosClient.post(url, table);
 };
-export const uploadTable = (id, data) => {
+export const upload = (id, data) => {
   const url = `/table/${id}`;
   return axiosClient.put(url, data);
+};
+export const uploadBookTable = (table) => {
+  const url = `/table/book-table`;
+  return axiosClient.post(url, table);
+};
+export const uploadMoveTable = (table) => {
+  const url = `/table/move-table`;
+  return axiosClient.post(url, table);
 };

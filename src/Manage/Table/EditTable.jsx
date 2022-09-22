@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { editTable, getTable } from "../../features/TableSlice/TableSlice";
+import { editTable, getAllTable } from "../../features/TableSlice/TableSlice";
 import styles from "../../css/LayoutAdmin.module.css";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, message, Select, Spin } from "antd";
 import { openNotificationWithIcon } from "../../Notification";
+import { getFloor } from "./../../features/FloorSlice/FloorSlice";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -19,27 +20,33 @@ const EditTable = () => {
   const { id } = useParams();
   const tables = useSelector((data) => data.table.value);
   const table = tables?.find((item) => item._id == id);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
-    dispatch(getTable());
+    dispatch(getAllTable());
   }, []);
-  const uploadTable = (value) => {
+  const uploadTable = async (value) => {
     const newData = {
-      ...table,
       name: value.name == undefined ? table.name : value.name,
     };
-
-    dispatch(editTable(newData));
-    navigate("/case-manager/table");
-    openNotificationWithIcon("success", "Sửa thành công ");
+    setLoading(true);
+    await dispatch(editTable({ id: id, data: newData }));
+    setLoading(false);
+    navigate("/manager/table");
+    message.success("Sửa thành công ");
   };
 
   return (
     <div>
+      {loading == true && (
+        <div style={{ marginBottom: 10 }}>
+          <Spin />
+        </div>
+      )}
       <h5 className={styles.title}>Sửa bàn</h5>
-      {table !== undefined && (
+      {tables.length > 0 && (
         <Form {...formItemLayout} onFinish={uploadTable}>
           <Form.Item name="name" label="Tên bàn" labelAlign="left">
             <Input defaultValue={table?.name} />
@@ -51,7 +58,7 @@ const EditTable = () => {
               htmlType="submit"
               style={{ marginRight: 10 }}
             >
-              <Link to="/case-manager/table">Quay lại</Link>
+              <Link to="/manager/table">Quay lại</Link>
             </Button>
             <Button type="primary" htmlType="submit">
               Sửa

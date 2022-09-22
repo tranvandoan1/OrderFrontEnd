@@ -2,25 +2,37 @@ import { Bar } from "@ant-design/plots";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { getAllOrder } from "./../../../features/Order/Order";
+import { getAllOrder } from "../../../features/Order/Order";
 import { Row, Statistic } from "antd";
 import styles from "../../../css/CssAdmin.module.css";
 
-const Year = (props) => {
+const Month = (props) => {
+
   const dispatch = useDispatch();
   const orders = useSelector((data) => data.order.value);
-
-  const year =
-    props?.check == "thisYear"
-      ? moment().year()
-      : props?.check == "lastYear"
-      ? moment().year() - 1
+  const month =
+    props?.check == "thisMonth"
+      ? moment().month() + 1
+      : props?.check == "lastMonth"
+      ? moment().month()
       : props?.check;
+  const year = moment().year();
   useEffect(() => {
     dispatch(getAllOrder());
   }, []);
 
-  const monthOfYear = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const dateOfMonth = Array.from(
+    {
+      length: moment(
+        `${moment().year()}-${
+          String(moment().month() + 1).length == 1
+            ? `0${moment().month() + 1}`
+            : moment().month() + 1
+        }`
+      ).daysInMonth(),
+    },
+    (v, k) => k + 1
+  );
 
   const list = () => {
     if (orders.length > 0) {
@@ -28,39 +40,47 @@ const Year = (props) => {
 
       orders.filter((item) => {
         const time = new Date(item.createdAt);
-        if (time.getFullYear() == year) {
+        if (time.getFullYear() == year && time.getMonth() + 1 == month) {
           dataOrder.push({
+            day: `Ngày ${time.getDate()}`,
             price: item.sumPrice,
-            time: time.getMonth() + 1,
-            sale: item.sale,
+            time: time.getDate(),
           });
         }
       });
 
-      const orderFindYear = [];
-      monthOfYear.map((item) => {
-        const data = dataOrder.filter((itemm) => itemm.time == item);
-        orderFindYear.push(data);
-      });
-      // tính tổng tiền các tháng
-      const data = [];
-      orderFindYear.map((item, index) => {
-        if (item.lenght <= 0) {
-          data.push({ day: index + 1, price: 0 });
-        } else {
-          let sum = 0;
-          for (let i = 0; i < item.length; i++) {
-            sum += Math.ceil(item[i].price * ((100 - item[i].sale) / 100));
-          }
-          data.push({ day: `Tháng ${index + 1}`, price: sum });
-        }
+      // lấy cách ngày không có đơn
+      const emptyDay = [];
+      function getDifference(array1, array2) {
+        return array1.filter((object1) => {
+          return !array2.some((object2) => {
+            return object1 === object2.time;
+          });
+        });
+      }
+      getDifference(dateOfMonth, dataOrder).map((item) =>
+        emptyDay.push({ day: `Ngày ${item}`, price: 0, time: item })
+      );
+      // sắp xếp các ngày theo tứ tự tăng dần
+      const data = [...dataOrder, ...emptyDay];
+      data?.sort((a, b) => {
+        return a.time - b.time;
       });
 
       // tính tổng tiền
+      let orderPrice = [];
+
+      orders.filter((item) => {
+        const time = new Date(item.createdAt);
+        if (time.getFullYear() == year && time.getMonth() + 1 == month) {
+          orderPrice.push(item);
+        }
+      });
+
       let sum = 0;
-      for (let i = 0; i < dataOrder.length; i++) {
+      for (let i = 0; i < orderPrice.length; i++) {
         sum += Math.ceil(
-          dataOrder[i].price * ((100 - dataOrder[i].sale) / 100)
+          orderPrice[i].sumPrice * ((100 - orderPrice[i].sale) / 100)
         );
       }
       const config = {
@@ -142,19 +162,23 @@ const Year = (props) => {
           <Row>
             <Statistic
               title={
-                props?.check == "thisYear"
-                  ? "Năm nay"
-                  : props?.check == "lastYear"
-                  ? "Năm trước"
-                  : `Năm ${props?.check}`
+                props?.check == "thisMonth"
+                  ? "Tháng này"
+                  : props?.check == "lastMonth"
+                  ? "Tháng trước"
+                  : `Tháng ${props.check}`
               }
-              value={
-                props?.check == "thisYear"
-                  ? `${year} `
-                  : props?.check == "lastYear"
-                  ? `${year} `
-                  : `${props?.check} `
-              }
+              value={`${moment().year()}-${
+                props?.check == "thisMonth"
+                  ? String(moment().month() + 1).length == 1
+                    ? `0${moment().month() + 1}`
+                    : moment().month() + 1
+                  : props?.check == "lastMonth"
+                  ? String(moment().month()).length == 1
+                    ? `0${moment().month()}`
+                    : moment().month()
+                  : `${props?.check}`
+              }`}
             />
             <Statistic
               title="Doanh thu"
@@ -189,4 +213,4 @@ const Year = (props) => {
   return <div>{list()}</div>;
 };
 
-export default Year;
+export default Month;

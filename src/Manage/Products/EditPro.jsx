@@ -2,13 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../../css/LayoutAdmin.module.css";
-import { Alert, Button, Checkbox, Form, Input, Select, Spin } from "antd";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Spin,
+  Switch,
+  Upload,
+} from "antd";
 import { openNotificationWithIcon } from "../../Notification";
-import { getProduct } from "../../features/ProductsSlice/ProductSlice";
+import {
+  getProduct,
+  getProductAll,
+} from "../../features/ProductsSlice/ProductSlice";
 import { getCategori } from "../../features/Categoris/CategoriSlice";
 import { uploadProduct } from "./../../features/ProductsSlice/ProductSlice";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../firebase";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 const formItemLayout = {
   labelCol: {
@@ -25,144 +41,42 @@ const EditPro = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [check, setCheck] = useState(false);
-  const product = useSelector((data) => data.product.value);
+  const products = useSelector((data) => data.product.value);
+  const product = products?.find((item) => item._id == id);
   const categoris = useSelector((data) => data.categori.value);
-
+  const [photo, setPhoto] = useState();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    dispatch(getProduct(id));
+    dispatch(getProductAll());
     dispatch(getCategori());
   }, []);
-  const uploadTable = (value) => {
-    if (
-      value.name == undefined &&
-      value.cate_id == undefined &&
-      value.price == undefined &&
-      value.check == undefined
-    ) {
-      openNotificationWithIcon("warning", "Chưa có sự thay đổi ");
-    } else {
-      const photo = document.querySelector("#photo").files[0];
-      if (photo == undefined) {
-        setCheck(true);
+  const uploadTable = async (value) => {
+    setCheck(true);
+    const productNew = {
+      cate_id: value.cate_id == undefined ? product?.cate_id : value.cate_id,
+      dvt: value.dvt == undefined ? product?.dvt : value.dvt,
+      name: value.name == undefined ? product?.name : value.name,
+      photo: photo == undefined ? product?.photo : photo,
+      price: value.price == undefined ? product?.price : value.price,
+      user_id: product?.user_id,
+      check: value.check == undefined ? product?.check : value.check,
+    };
+    await dispatch(uploadProduct({ id: product?._id, data: productNew }));
+    navigate("/manager/products");
+    message.success("Sửa thành công");
 
-        const newPro = {
-          ...product,
-          cate_id: value.cate_id == undefined ? product.cate_id : value.cate_id,
-          name: value.name == undefined ? product.name : value.name,
-          check: value.check == undefined ? product.check : value.check,
-          price:
-            value.price == undefined
-              ? Number(product.price)
-              : Number(value.price),
-        };
-        dispatch(uploadProduct(newPro));
-        navigate("/case-manager/products");
-        openNotificationWithIcon("success", "Sửa thành công ");
-        setCheck(false);
-      } else {
-        setCheck(true);
-
-        const imageRef = ref(storage, `images/${photo.name}`);
-        uploadBytes(imageRef, photo).then(() => {
-          getDownloadURL(imageRef).then((url) => {
-            const newPro = {
-              ...product,
-              cate_id:
-                value.cate_id == undefined ? product.cate_id : value.cate_id,
-              name: value.name == undefined ? product.name : value.name,
-              check: value.check == undefined ? product.check : value.check,
-              price:
-                value.price == undefined
-                  ? Number(product.price)
-                  : Number(value.price),
-              photo: url,
-            };
-            dispatch(uploadProduct(newPro));
-            navigate("/case-manager/products");
-            openNotificationWithIcon("success", "Thêm thành công ");
-            setCheck(false);
-          });
-        });
-      }
-    }
+    setCheck(false);
   };
 
-  const list = () => {
-    if (product.length > 0) {
-      return "";
-    } else if (Object.keys(product).length > 0) {
-      return (
-        <Form {...formItemLayout} onFinish={uploadTable}>
-          <Form.Item name="name" label="Tên sản phẩm" labelAlign="left">
-            <Input defaultValue={product.name} />
-          </Form.Item>
-          <Form.Item name="price" label="Giá" labelAlign="left">
-            <Input defaultValue={product.price} />
-          </Form.Item>
-          <Form.Item name="cate_id" label="Danh mục" labelAlign="left">
-            <Select
-              defaultValue={
-                categoris.length > 0 &&
-                categoris.find((item) => item._id == product.cate_id).name
-              }
-              placeholder="Chọn danh mục"
-            >
-              {categoris.map((item) => (
-                <Select.Option
-                  value={item._id}
-                  style={{ textTransform: "capitalize" }}
-                >
-                  {item.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            style={{ display: "flex", justifycontent: "space-between" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h5 style={{ width: "20%", fontSize: 16, fontWeight: "400" }}>
-                Ảnh :{" "}
-              </h5>
-              <div
-                style={{
-                  width: "80%",
-                  textAlign: "left",
-                }}
-              >
-                <Input type="file" name="photo" id="photo" />
-              </div>
-            </div>
-          </Form.Item>{" "}
-          <Form.Item
-            label="Sản phẩm theo cân "
-            name="check"
-            labelAlign="left"
-            valuePropName="checked"
-          >
-            <Checkbox></Checkbox>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ marginRight: 10 }}
-            >
-              <Link to="/case-manager/products">Quay lại</Link>
-            </Button>
-            <Button type="primary" htmlType="submit">
-              Sửa
-            </Button>
-          </Form.Item>
-        </Form>
-      );
-    }
+  const UploadAvatatr = (file) => {
+    const imageRef = ref(storage, `images/${file.name}`);
+    setLoading(true);
+    uploadBytes(imageRef, file).then(() => {
+      getDownloadURL(imageRef).then(async (url) => {
+        await setPhoto(url);
+        setLoading(false);
+      });
+    });
   };
   return (
     <div>
@@ -174,8 +88,118 @@ const EditPro = () => {
           </Spin>
         )}
       </h5>
+      {products.length <= 0 ? (
+        <Spin />
+      ) : (
+        <Form {...formItemLayout} onFinish={uploadTable}>
+          <Form.Item name="name" label="Tên sản phẩm" labelAlign="left">
+            <Input defaultValue={product?.name} />
+          </Form.Item>
+          <Form.Item name="price" label="Giá" labelAlign="left">
+            <Input defaultValue={product?.price} />
+          </Form.Item>
+          <Form.Item name="cate_id" label="Danh mục" labelAlign="left">
+            <Select
+              placeholder="Chọn danh mục"
+              defaultValue={product?.cate_id}
+              style={{ textTransform: "capitalize" }}
+            >
+              {categoris?.map((item) => (
+                <Select.Option
+                  value={item._id}
+                  key={item}
+                  style={{ textTransform: "capitalize" }}
+                >
+                  {item.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <div style={{ width: "20%" }}>
+                <h5 style={{ fontSize: 16, fontWeight: "400" }}>Ảnh : </h5>
+              </div>
+              <div style={{ width: "80%" }}>
+                <Upload
+                  listType="picture-card"
+                  showUploadList={false}
+                  beforeUpload={UploadAvatatr}
+                >
+                  <div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      {loading == true ? (
+                        <Spin />
+                      ) : (
+                        <div
+                          style={{
+                            position: "relative",
+                            overflow: "hidden",
+                            width: 100,
+                            height: 100,
+                          }}
+                        >
+                          <img
+                            src={photo == undefined ? product?.photo : photo}
+                            className="image"
+                            style={{
+                              objectFit: "contain",
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+            </div>
+          </Form.Item>
+          <Form.Item
+            labelAlign="left"
+            label="Cân nặng (nếu có)"
+            valuePropName="checked"
+            name="check"
+          >
+            <Switch defaultChecked={product?.check} />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
+              <Link to="/manager/products">Quay lại</Link>
+            </Button>
 
-      {list()}
+            {check == true ? (
+              <Spin />
+            ) : (
+              <Button type="primary" htmlType="submit">
+                Sửa
+              </Button>
+            )}
+          </Form.Item>
+        </Form>
+      )}
+      ;
     </div>
   );
 };

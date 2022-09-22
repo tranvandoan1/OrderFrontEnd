@@ -5,8 +5,6 @@ import "../css/Signin.css";
 import UserAPI from "../API/Users";
 import { Link, useNavigate } from "react-router-dom";
 const Signin = () => {
-  let navigate = useNavigate();
-
   const signin = async (values) => {
     const user = {
       email: values.email,
@@ -16,7 +14,11 @@ const Signin = () => {
     localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("token", JSON.stringify(data.token));
     alert("Mời bạn vào trang web");
-    navigate("/floor");
+    if (data?.user?.loginWeb == 0) {
+      window.location.href = "/intro";
+    } else {
+      window.location.href = "/tables";
+    }
   };
 
   return (

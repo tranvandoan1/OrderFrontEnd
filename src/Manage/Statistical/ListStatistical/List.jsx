@@ -1,70 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "@ant-design/plots";
 import styles from "../../../css/CssAdmin.module.css";
-import { BarChartOutlined } from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  EyeOutlined,
+  MinusOutlined,
+} from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrder } from "../../../features/Order/Order";
-import { Row, Select, Statistic } from "antd";
-import StatisticsMonth from "./StatisticsMonth";
+import { getAllOrder } from "../../../features/Order/Order";
+import { Modal, Row, Select, Statistic } from "antd";
+import Month from "./Month";
 import moment from "moment";
-import Yesterday from "./Yesterday";
-import Year from "./Year";
 import SelectTime from "./SelectTime";
-import { remove } from "../../../API/Order";
+import "../../../css/Home.css";
+import styles1 from "../../../css/Home.module.css";
+import Year from "./Year";
 const { Option } = Select;
 
 const List = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   const [check, setCheck] = useState("today");
+  const [detailStatistic, setDetailStatistic] = useState(false);
   const orders = useSelector((data) => data.order.value);
-  const orderUser = orders?.filter((item) => item.user_id == user._id);
-  console.log(orderUser, "asadas");
   useEffect(() => {
-    dispatch(getOrder());
+    dispatch(getAllOrder());
   }, []);
 
   const date = moment().date();
   const month = moment().month();
   const year = moment().year();
   const list = () => {
-    if (orderUser.length > 0) {
+    if (orders.length > 0) {
       let order = [];
 
-      orderUser.filter((item) => {
+      orders.filter((item) => {
         if (item.user_id == user._id) {
           const time = new Date(item.createdAt);
           if (
             check == "today"
-              ? date == time.getDate()
-              : check == "yesterDay"
-              ? date - 1 == time.getDate()
-              : " " &&
-                (check == "today" ||
-                  check == "thisMonth" ||
-                  check == "yesterDay")
-              ? month + 1 == time.getMonth() + 1
-              : check == "lastMonth"
-              ? month == time.getMonth() + 1
-              : " " && check == "lastYear"
-              ? year - 1 == time.getFullYear()
-              : check == "today" ||
-                check == "thisMonth" ||
-                check == "thisYear" ||
-                check == "yesterDay" ||
-                check == "lastMonth"
+              ? date == time.getDate() &&
+                month + 1 == time.getMonth() + 1 &&
+                year == time.getFullYear()
+              : check == "thisMonth"
+              ? month + 1 == time.getMonth() + 1 && year == time.getFullYear()
+              : check == "thisYear"
               ? year == time.getFullYear()
-              : " "
+              : check == "yesterDay"
+              ? date == time.getDate() - 1 &&
+                month + 1 == time.getMonth() + 1 &&
+                year == time.getFullYear()
+              : check == "lastMonth"
+              ? month == time.getMonth() + 1 && year == time.getFullYear()
+              : year - 1 == time.getFullYear()
           ) {
             order.push(item);
           }
         }
       });
-
       // tính tổng tiền
       let sum = 0;
       for (let i = 0; i < order.length; i++) {
-        sum += Math.ceil(order[i].sum_price * ((100 - order[i].sale) / 100));
+        sum += Math.ceil(order[i].sumPrice * ((100 - order[i].sale) / 100));
       }
 
       const data = [
@@ -181,21 +178,29 @@ const List = () => {
                   : " "
               }
               value={`${
-                check == "today"
-                  ? `${moment().date()}-`
-                  : check == "yesterDay"
-                  ? `${moment().date() - 1}-`
-                  : check == "lastMonth"
-                  ? `${moment().month()}-`
-                  : ""
-              }${
-                check == "today" || check == "thisMonth" || check == "yesterDay"
-                  ? `${moment().month() + 1}-`
-                  : ""
-              }${
                 check == "lastYear"
                   ? `${moment().year() - 1} `
-                  : `${moment().year()} `
+                  : `${moment().year()}${check !== "thisYear" ? "-" : " "}`
+              }${
+                check == "today" || check == "thisMonth" || check == "yesterDay"
+                  ? `${
+                      String(moment().month() + 1).length == 1
+                        ? `0${moment().month() + 1}`
+                        : moment().month() + 1
+                    }${check !== "thisMonth" ? "-" : ""}`
+                  : ""
+              }${
+                check == "today"
+                  ? `${moment().date()}`
+                  : check == "yesterDay"
+                  ? `${moment().date() - 1}`
+                  : check == "lastMonth"
+                  ? `${
+                      String(moment().month()).length == 1
+                        ? `0${moment().month()}`
+                        : moment().month()
+                    }`
+                  : ""
               }`}
             />
             <Statistic
@@ -206,6 +211,25 @@ const List = () => {
                 margin: "0 32px",
               }}
             />
+            {(check == "thisMonth" ||
+              check == "thisYear" ||
+              check == "lastMonth" ||
+              check == "lastYear") && (
+              <div className="detail">
+                <Statistic
+                  title="Xem chi tiết"
+                  value=""
+                  suffix={
+                    <span style={{ cursor: "pointer" }}>
+                      <EyeOutlined
+                        style={{ color: "yellowgreen" }}
+                        onClick={() => setDetailStatistic(true)}
+                      />
+                    </span>
+                  }
+                />
+              </div>
+            )}
           </Row>
 
           <br />
@@ -221,9 +245,14 @@ const List = () => {
     }
   };
   const handleChange = (value) => {
-    console.log(value);
     setCheck(value);
   };
+  window.addEventListener("click", function (e) {
+    if (e.target == document.getElementById("book_table")) {
+      setDetailStatistic(false);
+    }
+  });
+
   return (
     <div>
       <div className={styles.statistical}>
@@ -240,11 +269,9 @@ const List = () => {
             onChange={handleChange}
           >
             <Option value="today">Hôm nay</Option>
-            <Option value="thisWeek">Tuần này</Option>
             <Option value="thisMonth">Tháng này</Option>
             <Option value="thisYear">Năm nay</Option>
             <Option value="yesterDay">Hôm qua</Option>
-            <Option value="lastWeek">Tuần trước</Option>
             <Option value="lastMonth">Tháng trước</Option>
             <Option value="lastYear">Năm trước</Option>
             <Option value="selectDay">Chọn</Option>
@@ -261,11 +288,51 @@ const List = () => {
           list()
         ) : check == "selectDay" ? (
           <SelectTime />
-        ) : check == "thisWeek" ? (
-          <StatisticsMonth />
         ) : (
           ""
         )}
+      </div>
+      <div
+        id="book_table"
+        className={styles1.info_book_table}
+        style={
+          detailStatistic == true
+            ? {
+                transform: `scale(1,1)`,
+                visibility: "visible",
+                opacity: 1,
+                zIndex: 1000,
+              }
+            : {}
+        }
+      >
+        <div
+          style={{
+            background: "#fff",
+            width: 1000,
+            borderRadius: 2,
+            overflow: "hidden",
+            height: 600,
+          }}
+          className={styles1.table_book_table}
+        >
+          <div
+            style={{
+              height: "100%",
+              overflow: "scroll",
+              padding: 20,
+            }}
+            className={styles.statisticsMonth}
+          >
+            {check == "thisMonth" || check == "lastMonth" ? (
+              <Month check={check} />
+            ) : check == "thisYear" || check == "lastYear" ? (
+              <Year check={check} />
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
